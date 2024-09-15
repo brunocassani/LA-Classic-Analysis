@@ -4,4 +4,4 @@ A SQL database and Python analysis of the Lancaster Archery Classic Finals over 
 
 ## Contributing
 
-Please reach out to brunocassani04@gmail if you think I've made a mistake somewhere or want to contribute to the project.
+Please reach out to [brunocassani04@gmail.com](mailto:brunocassani04@gmail.com) or submit a request if you think I've made a mistake somewhere or want to contribute to the project.
