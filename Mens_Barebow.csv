@@ -4,34 +4,34 @@ Match ID,Archer 1 Name,Archer 2 Name,Archer 1 Score,Archer 2 Score,Archer 1 Xs,A
 3,John Demmer III,Kyle Coffey,108,98,1,0,3-spot,1-spot,Hoyt,Gillo,John Demmer III,2024,
 4,John Demmer III,Nicholas Way,110,101,1,0,3-spot,1-spot,Hoyt,Hoyt,John Demmer III,2024,
 5,John Demmer III,Simone Barbieri,112,113,4,4,3-spot,1-spot,Hoyt,Gillo,Simone Barbieri,2024,
-5,Erik Jonsson,Simone Barbieri,107,103,2,1,1-spot,1-spot,Gillo,Gillo,Erik Jonsson,2024,
-6,Erik Jonsson,Raymond Huang,116,116,3,4,1-spot,3-spot,Gillo,Hoyt,Raymond Huang,2024,One of Jonsson's 11s is actually a 12. Huang won 9-8 on tiebreakers
-7,John Winker,Mike Ellis,111,99,4,2,1-spot,1-spot,Hoyt,CD,John Winker,2023,
-8,John Winker,Tim Johnson,94,104,1,1,1-spot,1-spot,Hoyt,Hoyt,Tim Johnson,2023,
-9,Michael Fisher,Tim Johnson,104,112,1,2,1-spot,1-spot,Gillo,Hoyt,Tim Johnson,2023,
-10,Brian Way,Tim Johnson,107,107,0,3,1-spot,1-spot,Uukha,Hoyt,Tim Johnson,2023,
-11,Matt Hudson,Tim Johnson,111,110,1,1,1-spot,1-spot,CD,Hoyt,Matt Hudson,2023,
-12,Matt Hudson,Eric Johnson,106,108,0,1,1-spot,1-spot,CD,Gillo,Erik Jonsson,2023,
-13,Jerid Mullis,Lee Wilkins,94,97,0,1,1-spot,1-spot,CD,CD,Lee Wilkins,2022,2022 had an extra match at the start
-14,Paul Donahoo,Lee Wilkins,96,101,1,0,1-spot,1-spot,Hoyt,CD,Lee Wilkins,2022,
-15,Leo Pettersson,Lee Wilkins,105,108,2,2,1-spot,1-spot,Gillo,CD,Lee Wilkins,2022,
-16,Ryan Davis,Lee Wilkins,106,110,2,0,1-spot,1-spot,Gillo,CD,Lee Wilkins,2022,
-17,Edward Krystofosky,Lee Wilkins,101,107,0,1,1-spot,1-spot,Spigarelli,CD,Lee Wilkins,2022,
-18,Dewayne Martin,Lee Wilkins,107,98,2,0,1-spot,1-spot,CD,CD,Dewayne Martin,2022,
-19,Dewayne Martin,John Demmer III,111,113,3,2,1-spot,1-spot,CD,Hoyt,John Demmer III,2022,
-20,Timothy Strickland,Jarrett Kellan,101,98,2,2,1-spot,1-spot,Gillo,Hoyt,Timothy Strickland,2020,2021 event cancelled due to COVID
-21,Timothy Strickland,Mark Lynde,103,101,0,1,1-spot,1-spot,Gillo,Spigarelli,Timothy Strickland,2020,
-22,Timothy Strickland,Jeffrey Roy,99,108,2,3,1-spot,1-spot,Gillo,Gillo,Jeffrey Roy,2020,
-23,John Dillinger,Jeffrey Roy,106,106,0,2,1-spot,1-spot,Hoyt,Gillo,John Dillinger,2020,Won on tiebreak 9-8
-24,John Dillinger,Daniele Bellotti,105,96,1,1,1-spot,1-spot,Hoyt,Gillo,John Dillinger,2020,
-25,John Dillinger,Joakim Hassila,111,100,0,1,1-spot,1-spot,Hoyt,CD,John Dillinger,2020,Worth noting Dillinger had a 10-10-10 end
-26,John Dillinger,Michael Fisher,112,102,1,0,1-spot,1-spot,Hoyt,Gillo,John Dillinger,2020,
-27,Ben Rogers,Spanny Brooks,103,106,2,2,1-spot,1-spot,CD,CD,Spanny Brooks,2019,
-28,Michael Fisher,Spanny Brooks,105,103,2,1,1-spot,1-spot,Spigarelli,CD,Michael Fisher,2019,
-29,Michael Fisher,Grayson Partlowe,111,106,2,3,1-spot,1-spot,Spigarelli,Gillo,Michael Fisher,2019,
-30,Richard Barker,Bobby Worthington,100,97,1,1,1-spot,1-spot,CD,CD,Richard Barker,2018,First competition with the bow 'width' or 'ring' regulation for weights
-31,Richard Barker,Dewayne Martin,106,97,1,0,1-spot,1-spot,CD,CD,Richard Barker,2018,
-32,Richard Barker,John Demmer III,112,107,4,0,1-spot,1-spot,CD,Gillo,Richard Barker,2018,
-33,Dewayne Martin,Scott Bills,101,102,1,0,1-spot,1-spot,CD,Spigarelli,Scott Bills,2017,Bills said he was using a Spigarelli riser even thoug just about everything else was Hoyt
-34,Bobby Worthington,Scott Bills,107,104,2,2,1-spot,1-spot,CD,Spigarelli,Bobby Worthington,2017,
-35,Bobby Worthington,John Demmer III,99,103,0,1,1-spot,1-spot,CD,?,John Demmer III,2017,
+6,Erik Jonsson,Simone Barbieri,107,103,2,1,1-spot,1-spot,Gillo,Gillo,Erik Jonsson,2024,
+7,Erik Jonsson,Raymond Huang,116,116,3,4,1-spot,3-spot,Gillo,Hoyt,Raymond Huang,2024,One of Jonsson's 11s is actually a 12. Huang won 9-8 on tiebreakers
+8,John Winker,Mike Ellis,111,99,4,2,1-spot,1-spot,Hoyt,CD,John Winker,2023,
+9,John Winker,Tim Johnson,94,104,1,1,1-spot,1-spot,Hoyt,Hoyt,Tim Johnson,2023,
+10,Michael Fisher,Tim Johnson,104,112,1,2,1-spot,1-spot,Gillo,Hoyt,Tim Johnson,2023,
+11,Brian Way,Tim Johnson,107,107,0,3,1-spot,1-spot,Uukha,Hoyt,Tim Johnson,2023,
+12,Matt Hudson,Tim Johnson,111,110,1,1,1-spot,1-spot,CD,Hoyt,Matt Hudson,2023,
+13,Matt Hudson,Eric Johnson,106,108,0,1,1-spot,1-spot,CD,Gillo,Erik Jonsson,2023,
+14,Jerid Mullis,Lee Wilkins,94,97,0,1,1-spot,1-spot,CD,CD,Lee Wilkins,2022,
+15,Paul Donahoo,Lee Wilkins,96,101,1,0,1-spot,1-spot,Hoyt,CD,Lee Wilkins,2022,
+16,Leo Pettersson,Lee Wilkins,105,108,2,2,1-spot,1-spot,Gillo,CD,Lee Wilkins,2022,
+17,Ryan Davis,Lee Wilkins,106,110,2,0,1-spot,1-spot,Gillo,CD,Lee Wilkins,2022,
+18,Edward Krystofosky,Lee Wilkins,101,107,0,1,1-spot,1-spot,Spigarelli,CD,Lee Wilkins,2022,
+19,Dewayne Martin,Lee Wilkins,107,98,2,0,1-spot,1-spot,CD,CD,Dewayne Martin,2022,
+20,Dewayne Martin,John Demmer III,111,113,3,2,1-spot,1-spot,CD,Hoyt,John Demmer III,2022,
+21,Timothy Strickland,Jarrett Kellan,101,98,2,2,1-spot,1-spot,Gillo,Hoyt,Timothy Strickland,2020,2021 event cancelled due to COVID
+22,Timothy Strickland,Mark Lynde,103,101,0,1,1-spot,1-spot,Gillo,Spigarelli,Timothy Strickland,2020,
+23,Timothy Strickland,Jeffrey Roy,99,108,2,3,1-spot,1-spot,Gillo,Gillo,Jeffrey Roy,2020,
+24,John Dillinger,Jeffrey Roy,106,106,0,2,1-spot,1-spot,Hoyt,Gillo,John Dillinger,2020,Won on tiebreak 9-8
+25,John Dillinger,Daniele Bellotti,105,96,1,1,1-spot,1-spot,Hoyt,Gillo,John Dillinger,2020,
+26,John Dillinger,Joakim Hassila,111,100,0,1,1-spot,1-spot,Hoyt,CD,John Dillinger,2020,Worth noting Dillinger had a 10-10-10 end
+27,John Dillinger,Michael Fisher,112,102,1,0,1-spot,1-spot,Hoyt,Gillo,John Dillinger,2020,
+28,Ben Rogers,Spanny Brooks,103,106,2,2,1-spot,1-spot,CD,CD,Spanny Brooks,2019,
+29,Michael Fisher,Spanny Brooks,105,103,2,1,1-spot,1-spot,Spigarelli,CD,Michael Fisher,2019,
+30,Michael Fisher,Grayson Partlowe,111,106,2,3,1-spot,1-spot,Spigarelli,Gillo,Michael Fisher,2019,
+31,Richard Barker,Bobby Worthington,100,97,1,1,1-spot,1-spot,CD,CD,Richard Barker,2018,First competition with the bow 'width' or 'ring' regulation for weights
+32,Richard Barker,Dewayne Martin,106,97,1,0,1-spot,1-spot,CD,CD,Richard Barker,2018,
+33,Richard Barker,John Demmer III,112,107,4,0,1-spot,1-spot,CD,Gillo,Richard Barker,2018,
+34,Dewayne Martin,Scott Bills,101,102,1,0,1-spot,1-spot,CD,Spigarelli,Scott Bills,2017,Bills said he was using a Spigarelli riser even though just about everything else was Hoyt
+35,Bobby Worthington,Scott Bills,107,104,2,2,1-spot,1-spot,CD,Spigarelli,Bobby Worthington,2017,
+36,Bobby Worthington,John Demmer III,99,103,0,1,1-spot,1-spot,CD,Gillo,John Demmer III,2017,
