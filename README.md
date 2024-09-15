@@ -11,4 +11,4 @@ Please reach out to [brunocassani04@gmail.com](mailto:brunocassani04@gmail.com) 
 All information in the `.csv`s is taken from the Lancaster Archery YouTube channel.
 
 ## License
-The MIT License. See `License.md` for more information.
+The MIT License. See `LICENSE.md` for more information.
