@@ -66,7 +66,7 @@ def plot_total_xs_per_year(df):
     # Show the plot
     plt.show()
 
-
+#WORKING
 # Bar chart with top 10 single performances (x-axis: archer name and the year in parenthesis, y-axis: average score per arrow)
 def plot_top_performances(df):
     # Calculate average score per arrow for both archers
@@ -104,7 +104,7 @@ def plot_top_performances(df):
     # Show the plot
     plt.show()
 
-
+#WOKRING
 #Win percentage visual by riser brand, also mentioning how many total (unique) archers each has sponsored (ex: (percentage/progress chart) company X has won 25/54. so the circle is fillled to 46.2%). ONE CHART PER COMPANY.
 def plot_win_percentage_by_riser(df):
     # Combine Archer 1 and Archer 2 data into one DataFrame
@@ -173,10 +173,59 @@ def plot_best_individual_performers(df):
     plt.figure(figsize=(12, 6))
     plt.bar(top_performers['Label'], top_performers['Average_Score'], color='lightgreen')
     
+    #TODO: FIX LABEL NOT SHOWING
+    plt.axhline(y=8.66, color='red', linestyle='--', label='Competition Average (8.66)')
+    
     # Set plot details
     plt.title('Top 5 Best Individual Performers (Average Score per Arrow)')
     plt.ylabel('Average Score per Arrow')
-    plt.ylim(8, 10)  # Set y-axis range to match typical scores
+    plt.ylim(8.2, 10)  # Set y-axis range to match typical scores
+    plt.xticks(rotation=45, ha='right')  # Rotate the x-axis labels for readability
+    plt.tight_layout()  # Adjust layout
+    
+    # Show the plot
+    plt.show()
+
+#WORKING
+# Function to create bar chart for top 10 most accurate performers aka the most Xs per match AVERAGE (minimum 2 matches)
+def plot_top_accurate_performers(df):
+    # Calculate total Xs for both archers
+    df['Archer 1 Total Xs'] = df['Archer 1 Xs']
+    df['Archer 2 Total Xs'] = df['Archer 2 Xs']
+    
+    # Combine data for both archers into one DataFrame
+    xs_data = pd.concat([
+        df[['Archer 1 Name', 'Year', 'Archer 1 Total Xs']].rename(columns={'Archer 1 Name': 'Archer', 'Archer 1 Total Xs': 'Total Xs'}),
+        df[['Archer 2 Name', 'Year', 'Archer 2 Total Xs']].rename(columns={'Archer 2 Name': 'Archer', 'Archer 2 Total Xs': 'Total Xs'})
+    ])
+    
+    # Group by archer and calculate the average Xs per match and the number of matches
+    accuracy_stats = xs_data.groupby('Archer').agg(
+        Average_Xs=('Total Xs', 'mean'),
+        Match_Count=('Total Xs', 'size')
+    )
+    
+    # Filter out archers with fewer than 2 matches
+    accuracy_stats = accuracy_stats[accuracy_stats['Match_Count'] >= 2]
+    
+    # Sort by average Xs per match in descending order and take the top 10
+    top_accurate_performers = accuracy_stats.sort_values(by='Average_Xs', ascending=False).head(10)
+    
+    # Create labels for the x-axis (archer name and year)
+    top_accurate_performers['Label'] = top_accurate_performers.index
+    
+    # Plot the bar chart
+    plt.figure(figsize=(12, 6))
+    plt.bar(top_accurate_performers['Label'], top_accurate_performers['Average_Xs'], color='goldenrod')
+    
+    #TODO: FIX LABEL NOT SHOWING
+    plt.axhline(y=1.375, color='red', linestyle='--', label='Competition Average (1.375)')
+    
+    # Set plot details
+    plt.title('Top 10 Most Accurate Performers (Average Xs per Match)')
+    plt.ylabel('Average Xs per Match')
+    plt.xlabel('Archer')
+    plt.ylim(0, 3)  # Set y-axis range to match typical Xs scores
     plt.xticks(rotation=45, ha='right')  # Rotate the x-axis labels for readability
     plt.tight_layout()  # Adjust layout
     
@@ -184,31 +233,34 @@ def plot_best_individual_performers(df):
     plt.show()
 
 
-# Function to create bar chart for top 10 most accurate performers (minimum 2 matches)
-def plot_top_accurate_performers(df):
-    archer_xs_counts = df[['Archer 1 Name', 'Archer 1 Xs', 'Archer 2 Name', 'Archer 2 Xs']]
-    archer_xs_melt = pd.melt(archer_xs_counts, var_name='Archer', value_name='Xs')
-
-    archer_xs = archer_xs_melt.groupby('Archer').mean().nlargest(10, 'Xs')
-
-    archer_xs.plot(kind='bar', figsize=(10, 6))
-    plt.title('Lorem Ipsum: Top 10 Most Accurate Performers')
-    plt.xlabel('Archer Name')
-    plt.ylabel('Average Xs per Match')
-    plt.show()
-
-# Function to create a bar chart for top 10 most matches
+# Function to create a bar chart for archers with top 10 most matches played
 def plot_top_match_counts(df):
-    matches = pd.melt(df, id_vars=['Match ID'], value_vars=['Archer 1 Name', 'Archer 2 Name'],
-                      var_name='Archer Role', value_name='Archer')
-
-    match_counts = matches['Archer'].value_counts().nlargest(10)
-
-    match_counts.plot(kind='bar', figsize=(10, 6))
-    plt.title('Lorem Ipsum: Top 10 Most Matches')
-    plt.xlabel('Archer Name')
-    plt.ylabel('Total Matches')
+    # Combine data for both archers into one DataFrame, treating each as a separate row
+    match_counts = pd.concat([
+        df[['Archer 1 Name']].rename(columns={'Archer 1 Name': 'Archer'}),
+        df[['Archer 2 Name']].rename(columns={'Archer 2 Name': 'Archer'})
+    ])
+    
+    # Group by archer and count the number of matches played
+    match_counts = match_counts.groupby('Archer').size().reset_index(name='Match Count')
+    
+    # Sort by match count in descending order and take the top 10
+    top_match_counts = match_counts.sort_values(by='Match Count', ascending=False).head(9)
+    
+    # Plot the bar chart
+    plt.figure(figsize=(12, 6))
+    plt.bar(top_match_counts['Archer'], top_match_counts['Match Count'], color='coral')
+    
+    # Set plot details
+    plt.title('Top Archers with Most Matches')
+    plt.ylabel('Number of Matches')
+    plt.xlabel('Archer')
+    plt.xticks(rotation=45, ha='right')  # Rotate the x-axis labels for readability
+    plt.tight_layout()  # Adjust layout
+    
+    # Show the plot
     plt.show()
+
 
 # Function to plot top 5 longest winning streaks
 def plot_top_winning_streaks(df):
