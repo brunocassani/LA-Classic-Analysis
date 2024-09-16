@@ -1,6 +1,9 @@
 import pandas as pd
 import matplotlib.pyplot as plt
 import numpy as np
+import re
+import seaborn as sns
+from sklearn.linear_model import LinearRegression
 
 # HERE ARE ALL THE COLUMNS FROM Mens_Barebow IN ORDER
 # Match ID, Archer 1 Name, Archer 2 Name, Archer 1 Score, Archer 2 Score, Archer 1 Xs, Archer 2 Xs, Archer 1 Target, Archer 2 Target, Archer 1 Riser, Archer 2 Riser, Winner, Year, Notes
@@ -342,68 +345,148 @@ def plot_returning_archers(df):
     # Display the chart
     plt.show()
 
+# Helper function to extract the last name, handling suffixes with regex
+def extract_last_name(name):
+    # Split the name by spaces
+    name_parts = name.split()
+    
+    # Check if the last part is a Roman numeral (e.g., "III", "IV")
+    if re.match(r'^(I|II|III|IV|V|VI|VII|VIII|IX|X)$', name_parts[-1]):
+        # If it is, use the second-to-last part as the last name
+        return name_parts[-2]
+    else:
+        # Otherwise, use the last part as the last name
+        return name_parts[-1]
 
-# Function to calculate and plot the top 5 matches by total points
 def plot_top_matches_by_points(df):
-    df['Total Points'] = df['Archer 1 Score'] + df['Archer 2 Score']
-    top_5_matches = df.nlargest(5, 'Total Points')
-
-    top_5_matches.plot(x='Match ID', y='Total Points', kind='bar', figsize=(10, 6))
-    plt.title('Lorem Ipsum: Top 5 Best Matches by Total Points')
-    plt.xlabel('Match (Archer 1 vs Archer 2, Year)')
-    plt.ylabel('Total Points')
+    # Calculate average score per arrow for each match (for both archers combined)
+    df['Average Score per Arrow'] = (df['Archer 1 Score'] + df['Archer 2 Score']) / 24.0
+    
+    # Create a label for each match by concatenating the last names of Archer 1 and Archer 2, and the year
+    df['Match Label'] = df['Archer 1 Name'].apply(extract_last_name) + ' v. ' + df['Archer 2 Name'].apply(extract_last_name) + ' (' + df['Year'].astype(str) + ')'
+    
+    # Sort matches by the highest average score per arrow and select the top 5
+    top_matches = df.sort_values(by='Average Score per Arrow', ascending=False).head(5)
+    
+    # Plot the bar chart
+    plt.figure(figsize=(10, 6))
+    plt.bar(top_matches['Match Label'], top_matches['Average Score per Arrow'], color='skyblue')
+    
+    #TODO: FIX LABEL NOT SHOWING
+    plt.axhline(y=8.66, color='red', linestyle='--', label='Competition Average (8.66)')
+    
+    # Set plot details
+    plt.title('Top 5 Matches by Average Score per Arrow')
+    plt.ylabel('Average Score per Arrow')
+    plt.xlabel('Match')
+    plt.ylim(7, 10)  # Set y-axis range from 7 to 10
+    plt.xticks(rotation=45, ha='right')  # Rotate the x-axis labels for better readability
+    plt.tight_layout()  # Adjust layout to fit everything
+    
+    # Show the plot
     plt.show()
 
-# Function to plot top 5 best matches by accuracy (Xs)
-def plot_top_matches_by_accuracy(df):
-    df['Total Xs'] = df['Archer 1 Xs'] + df['Archer 2 Xs']
-    top_5_xs_matches = df.nlargest(5, 'Total Xs')
 
-    top_5_xs_matches.plot(x='Match ID', y='Total Xs', kind='bar', figsize=(10, 6))
-    plt.title('Lorem Ipsum: Top 5 Best Matches by Total Xs')
-    plt.xlabel('Match (Archer 1 vs Archer 2, Year)')
+def plot_top_matches_by_accuracy(df):
+    # Calculate total Xs for each match (sum of Archer 1 and Archer 2 Xs)
+    df['Total Xs'] = df['Archer 1 Xs'] + df['Archer 2 Xs']
+    
+    # Create a label for each match by concatenating the last names of Archer 1 and Archer 2, and the year
+    df['Match Label'] = df['Archer 1 Name'].apply(extract_last_name) + ' v. ' + df['Archer 2 Name'].apply(extract_last_name) + ' ' + df['Year'].astype(str)
+    
+    # Sort matches by the highest total Xs and select the top 5
+    top_matches = df.sort_values(by='Total Xs', ascending=False).head(5)
+    
+    # Plot the bar chart
+    plt.figure(figsize=(10, 6))
+    plt.bar(top_matches['Match Label'], top_matches['Total Xs'], color='skyblue')
+    
+    # Set plot details
+    plt.title('Top 5 Matches by Accuracy (Total Xs)')
     plt.ylabel('Total Xs')
+    plt.xlabel('Match')
+    plt.ylim(0, top_matches['Total Xs'].max() + 2)  # Add some buffer to y-axis for better visibility
+    plt.xticks(rotation=45, ha='right')  # Rotate the x-axis labels for better readability
+    plt.tight_layout()  # Adjust layout to fit everything
     plt.show()
 
 # Function to plot archer performance by 1-spot vs 3-spot
 def plot_1spot_vs_3spot(df):
-    df_2024 = df[df['Year'] == 2024]
-    target_type = df_2024.groupby('Archer 1 Target')['Archer 1 Score'].sum() + df_2024.groupby('Archer 2 Target')['Archer 2 Score'].sum()
-
-    target_type.plot(kind='bar', figsize=(10, 6))
-    plt.title('Lorem Ipsum: 3-Spot vs 1-Spot Performance in 2024')
-    plt.xlabel('Target Type')
+    # Calculate average score per arrow for each archer
+    df['Archer 1 Average Score per Arrow'] = df['Archer 1 Score'] / 12.0
+    df['Archer 2 Average Score per Arrow'] = df['Archer 2 Score'] / 12.0
+    
+    # Combine Archer 1 and Archer 2 data into one DataFrame
+    archer_data = pd.concat([
+        df[['Archer 1 Target', 'Archer 1 Average Score per Arrow']].rename(columns={'Archer 1 Target': 'Target Type', 'Archer 1 Average Score per Arrow': 'Average Score per Arrow'}),
+        df[['Archer 2 Target', 'Archer 2 Average Score per Arrow']].rename(columns={'Archer 2 Target': 'Target Type', 'Archer 2 Average Score per Arrow': 'Average Score per Arrow'})
+    ])
+    
+    # Separate data for 1-spot and 3-spot targets
+    spot_1_data = archer_data[archer_data['Target Type'] == '1-spot']
+    spot_3_data = archer_data[archer_data['Target Type'] == '3-spot']
+    
+    # Calculate average score per arrow for both target types
+    avg_1spot = spot_1_data['Average Score per Arrow'].mean()
+    avg_3spot = spot_3_data['Average Score per Arrow'].mean()
+    
+    # Create a bar plot
+    plt.figure(figsize=(8, 6))
+    plt.bar(['1-Spot', '3-Spot'], [avg_1spot, avg_3spot], color=['blue', 'orange'])
+    
+    plt.title('Average Score per Arrow: 1-Spot vs 3-Spot Targets')
     plt.ylabel('Average Score per Arrow')
+    plt.ylim(7, 10)  # Set y-axis range from 7 to 10
     plt.show()
+
 
 # Function to calculate and plot percentage of archers who won after hitting more Xs
 def plot_xs_wins_percentage(df):
-    df['More Xs Wins'] = (df['Archer 1 Xs'] > df['Archer 2 Xs']) & (df['Winner'] == df['Archer 1 Name']) | \
-                         (df['Archer 2 Xs'] > df['Archer 1 Xs']) & (df['Winner'] == df['Archer 2 Name'])
+    # Add a column to check if Archer 1 hit more Xs than Archer 2
+    df['Archer 1 More Xs'] = df['Archer 1 Xs'] > df['Archer 2 Xs']
+    
+    # Add a column to check if Archer 2 hit more Xs than Archer 1
+    df['Archer 2 More Xs'] = df['Archer 2 Xs'] > df['Archer 1 Xs']
 
-    xs_wins_percentage = df['More Xs Wins'].mean() * 100
+    # Exclude matches where both archers hit the same number of Xs
+    df_filtered = df[df['Archer 1 Xs'] != df['Archer 2 Xs']].copy()  # Use .copy() to avoid SettingWithCopyWarning
 
-    plt.figure(figsize=(6, 6))
-    plt.pie([xs_wins_percentage, 100 - xs_wins_percentage], labels=['Won with More Xs', 'Did Not Win'], autopct='%1.1f%%')
-    plt.title(f'Lorem Ipsum: {xs_wins_percentage:.2f}% of Archers Won with More Xs')
+    # Add columns to check if the winner had more Xs
+    df_filtered.loc[:, 'Archer 1 Won'] = df_filtered['Winner'] == df_filtered['Archer 1 Name']
+    df_filtered.loc[:, 'Archer 2 Won'] = df_filtered['Winner'] == df_filtered['Archer 2 Name']
+
+    # Count the number of matches where the winner had more Xs
+    xs_wins = (
+        (df_filtered['Archer 1 More Xs'] & df_filtered['Archer 1 Won']) |
+        (df_filtered['Archer 2 More Xs'] & df_filtered['Archer 2 Won'])
+    ).sum()
+
+    # Total number of matches where one archer had more Xs
+    total_matches_with_more_xs = len(df_filtered)
+
+    # Calculate the percentage of wins where the archer had more Xs
+    xs_wins_percentage = (xs_wins / total_matches_with_more_xs) * 100
+
+    # Plot a circular progress chart to visualize the percentage
+    fig, ax = plt.subplots(figsize=(6, 6), subplot_kw={'aspect': 'equal'})
+
+    # Create the progress chart
+    wedges, texts = ax.pie([xs_wins_percentage, 100 - xs_wins_percentage], startangle=90, colors=['skyblue', 'lightgray'], wedgeprops={'width': 0.4})
+
+    # Add text at the center of the pie
+    plt.text(0, 0, f'{xs_wins_percentage:.1f}%', ha='center', va='center', fontsize=16)
+
+    # Set the title
+    plt.title(f'Percentage of Matches Won with More Xs', fontsize=14)
+
+    # Display the chart
     plt.show()
 
-# Function to calculate and plot percentage of archers who lost after hitting more Xs
-def plot_xs_losses_percentage(df):
-    df['More Xs Losses'] = (df['Archer 1 Xs'] > df['Archer 2 Xs']) & (df['Winner'] == df['Archer 2 Name']) | \
-                           (df['Archer 2 Xs'] > df['Archer 1 Xs']) & (df['Winner'] == df['Archer 1 Name'])
-
-    xs_losses_percentage = df['More Xs Losses'].mean() * 100
-
-    plt.figure(figsize=(6, 6))
-    plt.pie([xs_losses_percentage, 100 - xs_losses_percentage], labels=['Lost with More Xs', 'Did Not Lose'], autopct='%1.1f%%')
-    plt.title(f'Lorem Ipsum: {xs_losses_percentage:.2f}% of Archers Lost with More Xs')
-    plt.show()
 
 # Function to display the fact about the only 12 hit
 def plot_only_12_hit():
     plt.text(0.5, 0.5, "Only 1 12 has been hit! Jonsson hit it to force a tiebreaker in the 2024 finals!", fontsize=12, ha='center')
-    plt.title('Lorem Ipsum: Only 12 Hit Fact')
+    plt.title('A single 12!')
     plt.show()
 
 # Function to display the fact about zero matches without Xs and average Xs per match
@@ -414,7 +497,7 @@ def plot_zero_x_matches(df):
     plt.text(0.5, 0.5, f"There have been {zero_x_matches} matches where no one hit an X.\n"
                        f"The average number of Xs per match is {avg_xs_per_match:.2f}.",
              fontsize=12, ha='center')
-    plt.title('Lorem Ipsum: Zero X Matches and Average Xs')
+    plt.title('Zero Xs!')
     plt.show()
 
 # Function to display the average score per arrow across all matches
@@ -423,31 +506,174 @@ def plot_average_score_per_arrow(df):
     total_arrows = 4 * len(df)
     avg_score_per_arrow = total_score / total_arrows
 
-    plt.text(0.5, 0.5, f"High quality! The average score per arrow across all matches is {avg_score_per_arrow:.2f}.",
+    plt.text(0.5, 0.5, f"The average score per arrow across all matches is {avg_score_per_arrow:.2f}.",
              fontsize=12, ha='center')
-    plt.title('Lorem Ipsum: Average Score per Arrow Across All Matches')
+    plt.title('High quality!')
     plt.show()
 
 # Function to display the list of archers by win percentage
 def list_archers_by_win_percentage(df):
-    wins = df.groupby('Winner').size()
-    total_matches = df[['Archer 1 Name', 'Archer 2 Name']].melt()['value'].value_counts()
-    win_percentage = (wins / total_matches).sort_values(ascending=False).fillna(0)
-
-    print("Lorem Ipsum: List of Archers by Win Percentage")
-    print(win_percentage)
-
-# Function to display the list of archers who have switched riser companies
-def list_archers_switched_risers(df):
-    archer_riser_history = pd.melt(df[['Archer 1 Name', 'Archer 1 Riser', 'Year', 'Archer 2 Name', 'Archer 2 Riser']],
-                                   id_vars=['Year'], value_vars=['Archer 1 Riser', 'Archer 2 Riser'],
-                                   var_name='Archer Role', value_name='Riser')
+    # Combine Archer 1 and Archer 2 data into one DataFrame
+    archer_data = pd.concat([
+        df[['Archer 1 Name', 'Winner']].rename(columns={'Archer 1 Name': 'Archer', 'Winner': 'Is Winner'}),
+        df[['Archer 2 Name', 'Winner']].rename(columns={'Archer 2 Name': 'Archer', 'Winner': 'Is Winner'})
+    ])
     
-    archer_risers = archer_riser_history.pivot_table(index='Archer Role', columns='Year', values='Riser', aggfunc='first')
-    switched_risers = archer_risers.apply(lambda x: len(x.unique()) > 1, axis=1)
+    # Add a column to determine if the archer is the winner
+    archer_data['Is Winner'] = archer_data.apply(lambda row: row['Is Winner'] == row['Archer'], axis=1)
 
-    print("Lorem Ipsum: List of Archers Who Have Switched Riser Companies")
-    print(switched_risers[switched_risers].index.tolist())
+    # Group by archer to calculate win percentage and count total matches
+    archer_stats = archer_data.groupby('Archer').agg(
+        Wins=('Is Winner', 'sum'),  # Count the number of wins
+        Total_Matches=('Is Winner', 'count')  # Count the total number of matches
+    )
+    
+    # Calculate win percentage
+    archer_stats['Win Percentage'] = (archer_stats['Wins'] / archer_stats['Total_Matches']) * 100
+    
+    # Sort by win percentage and get the top 5 archers
+    top_archers = archer_stats.sort_values(by='Win Percentage', ascending=False).head(5)
+    
+    # Display the top 5 archers
+    print("Top 5 Archers by Win Percentage:")
+    print(top_archers[['Win Percentage']])
+
+#scatter plot
+def plot_all_performances(df):
+    # Calculate average Xs and average score per arrow for each archer
+    archer_performance = pd.concat([
+        df[['Archer 1 Name', 'Archer 1 Xs', 'Archer 1 Score']].rename(columns={
+            'Archer 1 Name': 'Archer',
+            'Archer 1 Xs': 'Xs',
+            'Archer 1 Score': 'Score'
+        }),
+        df[['Archer 2 Name', 'Archer 2 Xs', 'Archer 2 Score']].rename(columns={
+            'Archer 2 Name': 'Archer',
+            'Archer 2 Xs': 'Xs',
+            'Archer 2 Score': 'Score'
+        })
+    ])
+
+    # Group by archer and calculate average Xs and average score per arrow
+    archer_stats = archer_performance.groupby('Archer').agg(
+        Average_Xs=('Xs', 'mean'),
+        Average_Score_per_Arrow=('Score', lambda x: x.mean() / 12.0)
+    ).reset_index()
+
+    # Prepare data for linear regression
+    X = archer_stats[['Average_Xs']].values
+    y = archer_stats['Average_Score_per_Arrow'].values
+    
+    # Fit linear regression model
+    model = LinearRegression()
+    model.fit(X, y)
+    
+    # Predict y values for the regression line
+    x_range = np.linspace(X.min(), X.max(), 100).reshape(-1, 1)
+    y_pred = model.predict(x_range)
+    
+    # Create jitter
+    jitter_strength_x = 0.1  # Adjust as needed
+    jitter_strength_y = 0.1  # Adjust as needed
+    archer_stats['Jitter_X'] = np.random.uniform(-jitter_strength_x, jitter_strength_x, size=len(archer_stats))
+    archer_stats['Jitter_Y'] = np.random.uniform(-jitter_strength_y, jitter_strength_y, size=len(archer_stats))
+    
+    # Create scatter plot
+    plt.figure(figsize=(12, 8))
+    plt.scatter(
+        archer_stats['Average_Xs'] + archer_stats['Jitter_X'],
+        archer_stats['Average_Score_per_Arrow'] + archer_stats['Jitter_Y'],
+        color='blue',
+        label='Archers'
+    )
+
+    # Plot the linear regression line
+    plt.plot(x_range, y_pred, color='red', linestyle='--', label='Linear Regression')
+
+    # Annotate each point based on conditions
+    for i, row in archer_stats.iterrows():
+        x = row['Average_Xs'] + row['Jitter_X']
+        y = row['Average_Score_per_Arrow'] + row['Jitter_Y']
+        if (y > 8.888 and x > 1.5) or (x > 2) or (y < 8) or (y == 0 and y > 8.5):
+            plt.annotate(row['Archer'], (x, y),
+                         textcoords="offset points", xytext=(0,5), ha='center')
+
+    # Set labels and title
+    plt.xlabel('Average Number of Xs')
+    plt.ylabel('Average Score per Arrow')
+    plt.title('Archer Performance: Average Xs vs Average Score per Arrow')
+    plt.legend()
+    plt.grid(True)
+
+    # Show the plot
+    plt.show()
+    
+def plot_heatmap(df):
+    # Calculate average Xs and average score per arrow for each archer
+    archer_performance = pd.concat([
+        df[['Archer 1 Name', 'Archer 1 Xs', 'Archer 1 Score']].rename(columns={
+            'Archer 1 Name': 'Archer',
+            'Archer 1 Xs': 'Xs',
+            'Archer 1 Score': 'Score'
+        }),
+        df[['Archer 2 Name', 'Archer 2 Xs', 'Archer 2 Score']].rename(columns={
+            'Archer 2 Name': 'Archer',
+            'Archer 2 Xs': 'Xs',
+            'Archer 2 Score': 'Score'
+        })
+    ])
+
+    # Group by archer and calculate average Xs and average score per arrow
+    archer_stats = archer_performance.groupby('Archer').agg(
+        Average_Xs=('Xs', 'mean'),
+        Average_Score_per_Arrow=('Score', lambda x: x.mean() / 12.0)
+    ).reset_index()
+
+    # Prepare data for linear regression
+    X = archer_stats[['Average_Xs']].values
+    y = archer_stats['Average_Score_per_Arrow'].values
+    
+    # Fit linear regression model
+    model = LinearRegression()
+    model.fit(X, y)
+    
+    # Predict y values for the regression line
+    x_range = np.linspace(X.min(), X.max(), 100).reshape(-1, 1)
+    y_pred = model.predict(x_range)
+    
+    # Create scatter plot with heatmap
+    plt.figure(figsize=(12, 8))
+    
+    # Scatter plot with KDE heatmap
+    sns.kdeplot(
+        data=archer_stats,
+        x='Average_Xs',
+        y='Average_Score_per_Arrow',
+        cmap='Blues',
+        fill=True,
+        thresh=0.1,
+        alpha=0.3
+    )
+    plt.scatter(
+        archer_stats['Average_Xs'],
+        archer_stats['Average_Score_per_Arrow'],
+        color='blue',
+        edgecolor='k',
+        alpha=0.7
+    )
+
+    # Plot the linear regression line
+    plt.plot(x_range, y_pred, color='red', linestyle='--', label='Linear Regression')
+
+    # Set labels and title
+    plt.xlabel('Average Number of Xs')
+    plt.ylabel('Average Score per Arrow')
+    plt.title('Archer Performance: Average Xs vs Average Score per Arrow')
+    plt.legend()
+    plt.grid(True)
+
+    # Show the plot
+    plt.show()
 
 def main():
     # Load the dataset
@@ -460,8 +686,8 @@ def main():
         print("2. Total Xs per Match per Year")
         print("3. Top 10 Performances by Average Score per Arrow")
         print("4. Win Percentage by Riser Brand")
-        print("5. Best Individual Performers (Min. 2 Matches)")
-        print("6. Top 10 Most Accurate Performers (Min. 2 Matches)")
+        print("5. Best Individual Performers")
+        print("6. Top 10 Most Accurate Performers")
         print("7. Top 10 Most Matches")
         print("8. Top 5 Longest Winning Streaks")
         print("9. Percentage of Returning Archers")
@@ -469,12 +695,12 @@ def main():
         print("11. Top 5 Matches by Accuracy (Xs)")
         print("12. 1-Spot vs 3-Spot Performance (2024)")
         print("13. Percentage of Wins with More Xs")
-        print("14. Percentage of Losses with More Xs")
-        print("15. Only 12 Hit Fact")
-        print("16. Zero X Matches and Average Xs per Match")
-        print("17. Average Score per Arrow Across All Matches")
-        print("18. List Archers by Win Percentage")
-        print("19. List Archers Who Switched Riser Companies")
+        print("14. Only 12 Hit Fact") # Fixed the missing option number
+        print("15. Zero X Matches and Average Xs per Match")
+        print("16. Average Score per Arrow Across All Matches")
+        print("17. List Archers by Win Percentage")
+        print("18. Scatter plot")
+        print("19. Heat map")
         print("0. Exit")
         
         # Get user input
@@ -507,18 +733,18 @@ def main():
             plot_1spot_vs_3spot(df)
         elif choice == '13':
             plot_xs_wins_percentage(df)
-        elif choice == '14':
-            plot_xs_losses_percentage(df)
-        elif choice == '15':
+        elif choice == '14':  # Fixed the missing option number
             plot_only_12_hit()
-        elif choice == '16':
+        elif choice == '15':
             plot_zero_x_matches(df)
-        elif choice == '17':
+        elif choice == '16':
             plot_average_score_per_arrow(df)
-        elif choice == '18':
+        elif choice == '17':
             list_archers_by_win_percentage(df)
+        elif choice == '18':
+            plot_all_performances(df)
         elif choice == '19':
-            list_archers_switched_risers(df)
+            plot_heatmap(df)
         elif choice == '0':
             print("Exiting program.")
             break
@@ -527,4 +753,3 @@ def main():
 
 if __name__ == "__main__":
     main()
-
