@@ -2,10 +2,14 @@ import pandas as pd
 import matplotlib.pyplot as plt
 import numpy as np
 
+# HERE ARE ALL THE COLUMNS FROM Mens_Barebow IN ORDER
+# Match ID, Archer 1 Name, Archer 2 Name, Archer 1 Score, Archer 2 Score, Archer 1 Xs, Archer 2 Xs, Archer 1 Target, Archer 2 Target, Archer 1 Riser, Archer 2 Riser, Winner, Year, Notes
+
 # Load the data
 def load_data():
     return pd.read_csv('Mens_Barebow.csv')
 
+#WORKING
 #average points per arrow
 def plot_average_points_per_year(df):
     # Add Match Number column for each year
@@ -33,7 +37,7 @@ def plot_average_points_per_year(df):
     plt.grid(True)
     plt.show()
 
-
+#WORKING
 # Function to create the stacked line chart for total Xs per match per year
 def plot_total_xs_per_year(df):
     df['Match Number'] = df.groupby('Year').cumcount() + 1
@@ -63,54 +67,122 @@ def plot_total_xs_per_year(df):
     plt.show()
 
 
-# TODO: FIX
-#Bar chart with top 10 performances (x-axis: archer name and the year in parenthesis, y-axis: average score per arrow (archer score / 12.0))
+# Bar chart with top 10 single performances (x-axis: archer name and the year in parenthesis, y-axis: average score per arrow)
 def plot_top_performances(df):
-    df['Archer 1 Avg'] = df['Archer 1 Score'] / 12.0
-    df['Archer 2 Avg'] = df['Archer 2 Score'] / 12.0
+    # Calculate average score per arrow for both archers
+    df['Archer 1 Average Score per Arrow'] = df['Archer 1 Score'] / 12.0
+    df['Archer 2 Average Score per Arrow'] = df['Archer 2 Score'] / 12.0
+    
+    # Create a DataFrame to hold the archer performances
+    performances = pd.DataFrame({
+        'Archer Name': pd.concat([df['Archer 1 Name'], df['Archer 2 Name']]),
+        'Year': pd.concat([df['Year'], df['Year']]),
+        'Average Score per Arrow': pd.concat([df['Archer 1 Average Score per Arrow'], df['Archer 2 Average Score per Arrow']])
+    })
 
-    top_performers = pd.melt(df[['Archer 1 Name', 'Archer 1 Avg', 'Year', 'Archer 2 Name', 'Archer 2 Avg']],
-                             id_vars=['Year'], value_vars=['Archer 1 Avg', 'Archer 2 Avg'],
-                             var_name='Archer', value_name='Avg Score').nlargest(10, 'Avg Score')
+    # Sort by the average score per arrow in descending order and take the top 10
+    top_performances = performances.sort_values(by='Average Score per Arrow', ascending=False).head(10)
+    
+    # Create labels for the x-axis (archer name and year)
+    top_performances['Label'] = top_performances['Archer Name'] + ' (' + top_performances['Year'].astype(str) + ')'
+    
+    # Plot the bar chart
+    plt.figure(figsize=(12, 6))
+    plt.bar(top_performances['Label'], top_performances['Average Score per Arrow'], color='skyblue')
 
-    top_performers.plot(x='Archer', y='Avg Score', kind='bar', figsize=(10, 6))
-    plt.title('Men\'s Barebow: Top 10 Performances by Avg Score per Arrow')
-    plt.xlabel('Archer (Year)')
+    # Add a horizontal dashed line at y = 8.66 for competition average
+    #TODO: FIX LABEL NOT SHOWING
+    plt.axhline(y=8.66, color='red', linestyle='--', label='Competition Average (8.66)')
+    
+    # Set plot details
+    plt.title('Top 10 Men\'s Barebow Single Performances (Average Score per Arrow)')
     plt.ylabel('Average Score per Arrow')
+    plt.ylim(8.4, 10)  # Set y-axis range from 7 to 10
+    plt.xticks(rotation=45, ha='right')  # Rotate the x-axis labels for better readability
+    plt.tight_layout()  # Adjust layout to fit everything
+    
+    # Show the plot
     plt.show()
 
-# TODO: FIX
-#Win percentage visual by riser brand, also mentioning how many total (unique) archers each has sponsored (ex: (percentage/progress chart) company X has won 25/54. so the circle is fillled to 46.2%). ONE CHART PER COMPANY. LIKE A PIE CHART WITH ONLY ONE OPTION
+
+#Win percentage visual by riser brand, also mentioning how many total (unique) archers each has sponsored (ex: (percentage/progress chart) company X has won 25/54. so the circle is fillled to 46.2%). ONE CHART PER COMPANY.
 def plot_win_percentage_by_riser(df):
-    winners = df.groupby(['Winner', 'Archer 1 Riser', 'Archer 2 Riser']).size().reset_index(name='Wins')
-    riser_stats = pd.melt(df[['Archer 1 Riser', 'Archer 2 Riser', 'Winner']],
-                          id_vars=['Winner'], value_vars=['Archer 1 Riser', 'Archer 2 Riser'])
+    # Combine Archer 1 and Archer 2 data into one DataFrame
+    riser_data = pd.concat([
+        df[['Archer 1 Riser', 'Archer 1 Name', 'Winner']].rename(columns={'Archer 1 Riser': 'Riser', 'Archer 1 Name': 'Archer', 'Winner': 'Is Winner'}),
+        df[['Archer 2 Riser', 'Archer 2 Name', 'Winner']].rename(columns={'Archer 2 Riser': 'Riser', 'Archer 2 Name': 'Archer', 'Winner': 'Is Winner'})
+    ])
 
-    for riser, group in riser_stats.groupby('value'):
-        total_matches = len(group)
-        wins = len(group[group['Winner'] == group['Winner']])
-        win_percentage = (wins / total_matches) * 100
+    # Apply row-wise comparison to determine if the archer is the winner
+    riser_data['Is Winner'] = riser_data.apply(lambda row: row['Is Winner'] == row['Archer'], axis=1)
 
-        plt.figure(figsize=(6, 6))
-        plt.pie([win_percentage, 100 - win_percentage], labels=[f'{riser} Wins', 'Losses'], autopct='%1.1f%%')
-        plt.title(f'Lorem Ipsum: Win Percentage for {riser}')
+    # Group by Riser to calculate win percentage and count unique archers
+    riser_stats = riser_data.groupby('Riser').agg(
+        Wins=('Is Winner', 'sum'),  # Count the number of wins
+        Total_Matches=('Is Winner', 'count'),  # Count the total number of matches for each riser
+        Unique_Archers=('Archer', 'nunique')  # Count the number of unique archers
+    )
+    
+    # Calculate win percentage
+    riser_stats['Win Percentage'] = (riser_stats['Wins'] / riser_stats['Total_Matches']) * 100
+    
+    # Plot a circular progress chart for each riser
+    for riser, stats in riser_stats.iterrows():
+        # Create a figure
+        fig, ax = plt.subplots(figsize=(6, 6), subplot_kw={'aspect': 'equal'})
+        
+        # Create the progress chart
+        win_percentage = stats['Win Percentage']
+        wedges, texts = ax.pie([win_percentage, 100 - win_percentage], startangle=90, colors=['skyblue', 'lightgray'], wedgeprops={'width': 0.4})
+
+        # Add the text at the center of the pie
+        plt.text(0, 0, f'{riser}\n{win_percentage:.1f}%', ha='center', va='center', fontsize=16)
+
+        # Add the title mentioning the number of unique archers
+        plt.title(f'{riser}: {int(stats["Unique_Archers"])} different archers\n{int(stats["Wins"])}/{int(stats["Total_Matches"])} matches won', fontsize=14)
+
+        # Display the chart
         plt.show()
 
-# Bar chart with top 10 best individual performers  (x-axis: archer name and with all years in parenthesis, y-axis: average score per arrow (archer score / 12.0))
+
+# Bar chart with top 5 best individual performers across all matches
 def plot_best_individual_performers(df):
-    archer_scores = pd.melt(df[['Archer 1 Name', 'Archer 1 Score', 'Archer 2 Name', 'Archer 2 Score']],
-                            value_vars=['Archer 1 Score', 'Archer 2 Score'], var_name='Archer', value_name='Score')
-
-    match_counts = archer_scores.groupby('Archer').size()
-    average_scores = archer_scores.groupby('Archer').mean()
-
-    performers = average_scores[match_counts >= 2].nlargest(10, 'Score')
-
-    performers.plot(kind='bar', figsize=(10, 6))
-    plt.title('Lorem Ipsum: Best Individual Performers')
-    plt.xlabel('Archer Name')
+    # Calculate average score per arrow for both archers
+    df['Archer 1 Average Score per Arrow'] = df['Archer 1 Score'] / 12.0
+    df['Archer 2 Average Score per Arrow'] = df['Archer 2 Score'] / 12.0
+    
+    # Combine data for both archers into one DataFrame
+    performances = pd.concat([
+        df[['Archer 1 Name', 'Year', 'Archer 1 Average Score per Arrow']].rename(columns={'Archer 1 Name': 'Archer', 'Archer 1 Average Score per Arrow': 'Average Score per Arrow'}),
+        df[['Archer 2 Name', 'Year', 'Archer 2 Average Score per Arrow']].rename(columns={'Archer 2 Name': 'Archer', 'Archer 2 Average Score per Arrow': 'Average Score per Arrow'})
+    ])
+    
+    # Group by archer and calculate the overall average score per arrow across all matches
+    average_scores = performances.groupby('Archer').agg(
+        Average_Score=('Average Score per Arrow', 'mean'),  # Average score across all matches
+        Years=('Year', lambda x: ', '.join(map(str, sorted(set(x)))))  # Collect all years in parentheses
+    )
+    
+    # Sort by average score and take the top 5
+    top_performers = average_scores.sort_values(by='Average_Score', ascending=False).head(5)
+    
+    # Create labels for the x-axis (archer name with years in parentheses)
+    top_performers['Label'] = top_performers.index + ' (' + top_performers['Years'] + ')'
+    
+    # Plot the bar chart
+    plt.figure(figsize=(12, 6))
+    plt.bar(top_performers['Label'], top_performers['Average_Score'], color='lightgreen')
+    
+    # Set plot details
+    plt.title('Top 5 Best Individual Performers (Average Score per Arrow)')
     plt.ylabel('Average Score per Arrow')
+    plt.ylim(8, 10)  # Set y-axis range to match typical scores
+    plt.xticks(rotation=45, ha='right')  # Rotate the x-axis labels for readability
+    plt.tight_layout()  # Adjust layout
+    
+    # Show the plot
     plt.show()
+
 
 # Function to create bar chart for top 10 most accurate performers (minimum 2 matches)
 def plot_top_accurate_performers(df):
