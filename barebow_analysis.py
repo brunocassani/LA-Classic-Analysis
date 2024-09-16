@@ -261,31 +261,87 @@ def plot_top_match_counts(df):
     # Show the plot
     plt.show()
 
-
-# Function to plot top 5 longest winning streaks
+# top 3 longest winning streaks
 def plot_top_winning_streaks(df):
-    df['Win Streak'] = (df['Winner'] == df['Archer 1 Name']) | (df['Winner'] == df['Archer 2 Name'])
+    # Create a DataFrame to hold each archer's winning streaks
+    streaks = []
 
-    streaks = df.groupby('Winner')['Win Streak'].apply(lambda x: x.cumsum()).nlargest(5)
+    # Iterate over each archer and find their winning streaks
+    for archer in pd.concat([df['Archer 1 Name'], df['Archer 2 Name']]).unique():
+        # Create a boolean column indicating if the archer won the match
+        df['Is_Winner'] = df['Winner'] == archer
+        
+        # Identify the winning streaks
+        df['Streak'] = (df['Is_Winner'] != df['Is_Winner'].shift()).cumsum()
+        streak_data = df[df['Is_Winner']]
+        
+        # Count the length of each streak for this archer
+        streak_lengths = streak_data.groupby('Streak').size()
+        streaks.extend([(archer, length) for length in streak_lengths])
 
-    streaks.plot(kind='bar', figsize=(10, 6))
-    plt.title('Lorem Ipsum: Top 5 Longest Winning Streaks')
-    plt.xlabel('Archer Name')
-    plt.ylabel('Longest Win Streak')
+    # Convert the list to a DataFrame
+    streaks_df = pd.DataFrame(streaks, columns=['Archer', 'Streak Length'])
+    
+    # Find the top 3 longest winning streaks
+    top_streaks = streaks_df.groupby('Archer').agg(
+        Top_Streak=('Streak Length', 'max'),
+        Count_Streaks=('Streak Length', 'size')
+    ).sort_values(by='Top_Streak', ascending=False).head(3)
+    
+    # Create labels for the x-axis (archer name and streak length)
+    top_streaks['Label'] = top_streaks.index + ' (' + top_streaks['Top_Streak'].astype(str) + ' matches)'
+    
+    # Plot the bar chart
+    plt.figure(figsize=(12, 6))
+    plt.bar(top_streaks['Label'], top_streaks['Top_Streak'], color='royalblue')
+    
+    # Set plot details
+    plt.title('Top 3 Longest Winning Streaks')
+    plt.ylabel('Streak Length (Number of Matches)')
+    plt.xlabel('Archer')
+    plt.xticks(rotation=45, ha='right')  # Rotate the x-axis labels for readability
+    plt.tight_layout()  # Adjust layout
+    
+    # Show the plot
     plt.show()
+
 
 # Function to calculate and plot the percentage of returning archers
 def plot_returning_archers(df):
-    archer_years = df.melt(id_vars=['Year'], value_vars=['Archer 1 Name', 'Archer 2 Name'],
-                           var_name='Archer Role', value_name='Archer')
+    # Combine Archer 1 and Archer 2 data into one DataFrame
+    archers_data = pd.concat([
+        df[['Archer 1 Name', 'Year']].rename(columns={'Archer 1 Name': 'Archer'}),
+        df[['Archer 2 Name', 'Year']].rename(columns={'Archer 2 Name': 'Archer'})
+    ])
 
-    returning_archers = archer_years.groupby('Archer')['Year'].nunique()
-    returning_percentage = (returning_archers > 1).mean() * 100
+    # Get a list of all unique archers and the years they competed
+    archers_years = archers_data.groupby('Archer')['Year'].apply(set).reset_index()
+    
+    # Determine returning archers (those who competed in more than one year)
+    archers_years['Returning'] = archers_years['Year'].apply(lambda years: len(years) > 1)
+    
+    total_archers = len(archers_years)
+    returning_archers = archers_years['Returning'].sum()
 
-    plt.figure(figsize=(6, 6))
-    plt.pie([returning_percentage, 100 - returning_percentage], labels=['Returning', 'Non-Returning'], autopct='%1.1f%%')
-    plt.title(f'Lorem Ipsum: {returning_percentage:.2f}% Returning Archers')
+    # Calculate the percentage of returning archers
+    percentage_returning = (returning_archers / total_archers) * 100
+
+    # Plot a circular progress chart
+    fig, ax = plt.subplots(figsize=(6, 6), subplot_kw={'aspect': 'equal'})
+    
+    # Create the progress chart
+    wedges, texts = ax.pie([percentage_returning, 100 - percentage_returning], startangle=90,
+                           colors=['lightgreen', 'lightgray'], wedgeprops={'width': 0.4})
+
+    # Add the text at the center of the pie
+    plt.text(0, 0, f'{percentage_returning:.1f}%\nReturning Archers', ha='center', va='center', fontsize=16)
+
+    # Add the title
+    plt.title(f'Total Archers: {total_archers}\nReturning Archers: {returning_archers}', fontsize=14)
+
+    # Display the chart
     plt.show()
+
 
 # Function to calculate and plot the top 5 matches by total points
 def plot_top_matches_by_points(df):
