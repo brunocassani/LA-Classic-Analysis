@@ -12,26 +12,31 @@ from sklearn.linear_model import LinearRegression
 def load_data():
     return pd.read_csv('Mens_Barebow.csv')
 
-#WORKING
 #average points per arrow
 def plot_average_points_per_year(df):
     # Add Match Number column for each year
     df['Match Number'] = df.groupby('Year').cumcount() + 1
+    
     # Calculate the average points per arrow
     df['Average Points per Arrow'] = (df['Archer 1 Score'] + df['Archer 2 Score']) / 24
-
-    max_match_number = 7  # The final match should be at x = 7
+    
+    # Define the maximum match number as 7
+    max_match_number = 7
 
     plt.figure(figsize=(10, 6))
 
     for year, data in df.groupby('Year'):
-        # Scale match numbers so that the final match is at `max_match_number`
         num_matches = data['Match Number'].max()
-        scaled_match_number = data['Match Number'] * (max_match_number / num_matches)
+        
+        # Create a dictionary for scaling match numbers so the last match is at 7
+        match_scale = {i: max_match_number - (num_matches - i) for i in range(1, num_matches + 1)}
+        
+        # Apply the scaling
+        scaled_match_number = data['Match Number'].map(match_scale)
         
         plt.plot(scaled_match_number, data['Average Points per Arrow'], marker='o', label=f"{year}")
 
-    plt.title('Men\'s Barebow: Average Points per Arrow per match')
+    plt.title('Average Points per Arrow per Match')
     plt.xlabel('Match')
     plt.ylabel('Average Points per Arrow')
     plt.xticks(range(1, max_match_number + 1))  # Ensure x-axis has labels 1 to 7
@@ -40,25 +45,31 @@ def plot_average_points_per_year(df):
     plt.grid(True)
     plt.show()
 
-#WORKING
 # Function to create the stacked line chart for total Xs per match per year
 def plot_total_xs_per_year(df):
+    # Add Match Number column for each year
     df['Match Number'] = df.groupby('Year').cumcount() + 1
+    # Calculate the total Xs per match
     df['Total Xs'] = df['Archer 1 Xs'] + df['Archer 2 Xs']
 
-    max_match_number = 7  # The final match should be at x = 7
+    # Define the maximum match number as 7
+    max_match_number = 7
 
     plt.figure(figsize=(10, 6))
 
     for year, data in df.groupby('Year'):
-        # Scale match numbers so that the final match is at `max_match_number`
         num_matches = data['Match Number'].max()
-        scaled_match_number = data['Match Number'] * (max_match_number / num_matches)
+        
+        # Create a dictionary for scaling match numbers so the last match is at 7
+        match_scale = {i: max_match_number - (num_matches - i) for i in range(1, num_matches + 1)}
+        
+        # Apply the scaling
+        scaled_match_number = data['Match Number'].map(match_scale)
         
         plt.plot(scaled_match_number, data['Total Xs'], marker='o', label=f"{year}")
 
     # Set the title, labels, and grid
-    plt.title("Men's Barebow: Total Xs per Match")
+    plt.title("Total Xs per Match")
     plt.xlabel('Match #')
     plt.ylabel('Total Xs')
     plt.xticks(range(1, max_match_number + 1))  # Ensure x-axis has labels 1 to 7
@@ -68,8 +79,6 @@ def plot_total_xs_per_year(df):
     
     # Show the plot
     plt.show()
-
-#WORKING
 # Bar chart with top 10 single performances (x-axis: archer name and the year in parenthesis, y-axis: average score per arrow)
 def plot_top_performances(df):
     # Calculate average score per arrow for both archers
@@ -98,16 +107,15 @@ def plot_top_performances(df):
     plt.axhline(y=8.66, color='red', linestyle='--', label='Competition Average (8.66)')
     
     # Set plot details
-    plt.title('Top 10 Men\'s Barebow Single Performances (Average Score per Arrow)')
+    plt.title('Top 10 Single Performances')
     plt.ylabel('Average Score per Arrow')
-    plt.ylim(8.4, 10)  # Set y-axis range from 7 to 10
+    plt.ylim(8, 10)  # Set y-axis range from 7 to 10
     plt.xticks(rotation=45, ha='right')  # Rotate the x-axis labels for better readability
     plt.tight_layout()  # Adjust layout to fit everything
     
     # Show the plot
     plt.show()
 
-#WOKRING
 #Win percentage visual by riser brand, also mentioning how many total (unique) archers each has sponsored (ex: (percentage/progress chart) company X has won 25/54. so the circle is fillled to 46.2%). ONE CHART PER COMPANY.
 def plot_win_percentage_by_riser(df):
     # Combine Archer 1 and Archer 2 data into one DataFrame
@@ -180,7 +188,7 @@ def plot_best_individual_performers(df):
     plt.axhline(y=8.66, color='red', linestyle='--', label='Competition Average (8.66)')
     
     # Set plot details
-    plt.title('Top 5 Best Individual Performers (Average Score per Arrow)')
+    plt.title('Top 5 Best Individual Performers')
     plt.ylabel('Average Score per Arrow')
     plt.ylim(8.2, 10)  # Set y-axis range to match typical scores
     plt.xticks(rotation=45, ha='right')  # Rotate the x-axis labels for readability
@@ -189,7 +197,6 @@ def plot_best_individual_performers(df):
     # Show the plot
     plt.show()
 
-#WORKING
 # Function to create bar chart for top 10 most accurate performers aka the most Xs per match AVERAGE (minimum 2 matches)
 def plot_top_accurate_performers(df):
     # Calculate total Xs for both archers
@@ -225,7 +232,7 @@ def plot_top_accurate_performers(df):
     plt.axhline(y=1.375, color='red', linestyle='--', label='Competition Average (1.375)')
     
     # Set plot details
-    plt.title('Top 10 Most Accurate Performers (Average Xs per Match)')
+    plt.title('Top 10 Most Accurate Performers')
     plt.ylabel('Average Xs per Match')
     plt.xlabel('Archer')
     plt.ylim(0, 3)  # Set y-axis range to match typical Xs scores
@@ -376,7 +383,7 @@ def plot_top_matches_by_points(df):
     plt.axhline(y=8.66, color='red', linestyle='--', label='Competition Average (8.66)')
     
     # Set plot details
-    plt.title('Top 5 Matches by Average Score per Arrow')
+    plt.title('Top 5 Matches in score')
     plt.ylabel('Average Score per Arrow')
     plt.xlabel('Match')
     plt.ylim(7, 10)  # Set y-axis range from 7 to 10
@@ -392,7 +399,7 @@ def plot_top_matches_by_accuracy(df):
     df['Total Xs'] = df['Archer 1 Xs'] + df['Archer 2 Xs']
     
     # Create a label for each match by concatenating the last names of Archer 1 and Archer 2, and the year
-    df['Match Label'] = df['Archer 1 Name'].apply(extract_last_name) + ' v. ' + df['Archer 2 Name'].apply(extract_last_name) + ' ' + df['Year'].astype(str)
+    df['Match Label'] = df['Archer 1 Name'].apply(extract_last_name) + ' v. ' + df['Archer 2 Name'].apply(extract_last_name) + ' (' + df['Year'].astype(str) + ')'
     
     # Sort matches by the highest total Xs and select the top 5
     top_matches = df.sort_values(by='Total Xs', ascending=False).head(5)
@@ -402,7 +409,7 @@ def plot_top_matches_by_accuracy(df):
     plt.bar(top_matches['Match Label'], top_matches['Total Xs'], color='skyblue')
     
     # Set plot details
-    plt.title('Top 5 Matches by Accuracy (Total Xs)')
+    plt.title('Top 5 Matches in Xs')
     plt.ylabel('Total Xs')
     plt.xlabel('Match')
     plt.ylim(0, top_matches['Total Xs'].max() + 2)  # Add some buffer to y-axis for better visibility
@@ -434,7 +441,7 @@ def plot_1spot_vs_3spot(df):
     plt.figure(figsize=(8, 6))
     plt.bar(['1-Spot', '3-Spot'], [avg_1spot, avg_3spot], color=['blue', 'orange'])
     
-    plt.title('Average Score per Arrow: 1-Spot vs 3-Spot Targets')
+    plt.title('1-Spot vs 3-Spot Targets (2024)')
     plt.ylabel('Average Score per Arrow')
     plt.ylim(7, 10)  # Set y-axis range from 7 to 10
     plt.show()
@@ -601,7 +608,7 @@ def plot_all_performances(df):
     # Set labels and title
     plt.xlabel('Average Number of Xs')
     plt.ylabel('Average Score per Arrow')
-    plt.title('Archer Performance: Average Xs vs Average Score per Arrow')
+    plt.title('Average Xs vs Average Score per Arrow')
     plt.legend()
     plt.grid(True)
 
@@ -668,13 +675,100 @@ def plot_heatmap(df):
     # Set labels and title
     plt.xlabel('Average Number of Xs')
     plt.ylabel('Average Score per Arrow')
-    plt.title('Archer Performance: Average Xs vs Average Score per Arrow')
+    plt.title('Average Xs vs Average Score per Arrow')
     plt.legend()
     plt.grid(True)
 
     # Show the plot
     plt.show()
 
+def plot_average_score_per_year(df):
+    # Calculate the average score per arrow for each match
+    df['Average Score per Arrow'] = (df['Archer 1 Score'] + df['Archer 2 Score']) / 24
+
+    # Group by year to calculate the average score per arrow for each year
+    yearly_avg_score = df.groupby('Year')['Average Score per Arrow'].mean()
+
+    # Define the range of years from 2018 to 2024
+    years = range(2018, 2025)
+
+    # Filter only the years that exist in the dataset
+    available_years = yearly_avg_score.index.intersection(years)
+    yearly_avg_score = yearly_avg_score.loc[available_years]
+
+    # Create the plot
+    plt.figure(figsize=(10, 6))
+    plt.plot(available_years, yearly_avg_score, marker='o', linestyle='-', color='b', label='Average Score per Arrow')
+
+    # Perform linear regression
+    x_values = np.array(available_years)
+    y_values = yearly_avg_score.values
+    slope, intercept = np.polyfit(x_values, y_values, 1)  # Perform linear regression (degree 1)
+
+    # Calculate regression line
+    reg_line = slope * x_values + intercept
+
+    # Plot the regression line
+    plt.plot(x_values, reg_line, color='r', linestyle='--', label=f'Regression Line (slope={slope:.2f})')
+
+    # Set plot labels and title
+    plt.title('Tournament-wide Average Score per Arrow', fontsize=14)
+    plt.xlabel('Year', fontsize=12)
+    plt.ylabel('Average Score per Arrow', fontsize=12)
+    
+    # Ensure the x-axis includes all years from 2018 to 2024
+    plt.xticks(years)
+    plt.ylim(7, 10)  # Adjust the y-axis range if necessary
+    plt.grid(True)
+    plt.legend()
+
+    # Show the plot
+    plt.show()
+
+def plot_average_xs_per_year(df):
+    # Calculate the total number of Xs per match (Archer 1 Xs + Archer 2 Xs)
+    df['Total Xs'] = df['Archer 1 Xs'] + df['Archer 2 Xs']
+
+    # Group by year to calculate the average number of Xs per match for each year
+    yearly_avg_xs = df.groupby('Year')['Total Xs'].mean()
+
+    # Define the range of years from 2018 to 2024
+    years = range(2018, 2025)
+
+    # Filter only the years that exist in the dataset
+    available_years = yearly_avg_xs.index.intersection(years)
+    yearly_avg_xs = yearly_avg_xs.loc[available_years]
+
+    # Create the plot
+    plt.figure(figsize=(10, 6))
+    plt.plot(available_years, yearly_avg_xs, marker='o', linestyle='-', color='b', label='Average Xs per Match')
+
+    # Perform linear regression
+    x_values = np.array(available_years)
+    y_values = yearly_avg_xs.values
+    slope, intercept = np.polyfit(x_values, y_values, 1)  # Perform linear regression (degree 1)
+
+    # Calculate regression line
+    reg_line = slope * x_values + intercept
+
+    # Plot the regression line
+    plt.plot(x_values, reg_line, color='r', linestyle='--', label=f'Regression Line (slope={slope:.2f})')
+
+    # Set plot labels and title
+    plt.title('Tournament-wide Average Xs per Match', fontsize=14)
+    plt.xlabel('Year', fontsize=12)
+    plt.ylabel('Average Xs per Match', fontsize=12)
+    
+    # Ensure the x-axis includes all years from 2018 to 2024
+    plt.xticks(years)
+    plt.ylim(0, 8)  # Adjust the y-axis range if necessary (depending on Xs distribution)
+    plt.grid(True)
+    plt.legend()
+
+    # Show the plot
+    plt.show()
+
+#main
 def main():
     # Load the dataset
     df = load_data()
@@ -701,6 +795,8 @@ def main():
         print("17. List Archers by Win Percentage")
         print("18. Scatter plot")
         print("19. Heat map")
+        print("20. Average Score per Arrow per Year")
+        print("21. Average Xs per Year")
         print("0. Exit")
         
         # Get user input
@@ -745,6 +841,10 @@ def main():
             plot_all_performances(df)
         elif choice == '19':
             plot_heatmap(df)
+        elif choice == '20':
+            plot_average_score_per_year(df)
+        elif choice == '21':
+            plot_average_xs_per_year(df)
         elif choice == '0':
             print("Exiting program.")
             break
