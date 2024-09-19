@@ -768,6 +768,42 @@ def plot_average_xs_per_year(df):
     # Show the plot
     plt.show()
 
+def plot_riser_participation_percentage(df):
+    # Combine Archer 1 and Archer 2 data into one DataFrame
+    riser_data = pd.concat([
+        df[['Archer 1 Riser', 'Match ID']].rename(columns={'Archer 1 Riser': 'Riser'}),
+        df[['Archer 2 Riser', 'Match ID']].rename(columns={'Archer 2 Riser': 'Riser'})
+    ])
+
+    # Drop duplicate matches where the same riser brand was used by both archers
+    riser_data = riser_data.drop_duplicates(subset=['Match ID', 'Riser'])
+
+    # Group by Riser to count unique matches
+    riser_match_count = riser_data.groupby('Riser')['Match ID'].nunique()
+
+    # Define total number of matches (for the percentage calculation)
+    total_matches = 37  # As you mentioned, there are 37 matches
+
+    # Calculate the participation percentage for each riser
+    riser_match_percentage = (riser_match_count / total_matches) * 100
+
+    # Plot a circular progress chart for each riser
+    for riser, match_percentage in riser_match_percentage.items():
+        # Create a figure
+        fig, ax = plt.subplots(figsize=(6, 6), subplot_kw={'aspect': 'equal'})
+        
+        # Create the progress chart
+        wedges, texts = ax.pie([match_percentage, 100 - match_percentage], startangle=90, colors=['skyblue', 'lightgray'], wedgeprops={'width': 0.4})
+
+        # Add the text at the center of the pie
+        plt.text(0, 0, f'{riser}\n{match_percentage:.1f}%', ha='center', va='center', fontsize=16)
+
+        # Add the title mentioning the number of unique matches
+        plt.title(f'{riser}: {riser_match_count[riser]} matches of 37', fontsize=14)
+
+        # Display the chart
+        plt.show()
+
 #main
 def main():
     # Load the dataset
@@ -797,6 +833,7 @@ def main():
         print("19. Heat map")
         print("20. Average Score per Arrow per Year")
         print("21. Average Xs per Year")
+        print("22. Participation per riser")
         print("0. Exit")
         
         # Get user input
@@ -845,6 +882,8 @@ def main():
             plot_average_score_per_year(df)
         elif choice == '21':
             plot_average_xs_per_year(df)
+        elif choice == '22':
+            plot_riser_participation_percentage(df)
         elif choice == '0':
             print("Exiting program.")
             break
