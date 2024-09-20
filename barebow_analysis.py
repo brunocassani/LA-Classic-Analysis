@@ -809,7 +809,7 @@ def main():
     # Load the dataset
     df = load_data()
     
-    plt.rcParams["font.family"] = "Times" #subject to change, times font for now
+    plt.rcParams["font.family"] = "Helvetica" #subject to change
 
     # Menu to choose analysis
     while True:
