@@ -808,6 +808,8 @@ def plot_riser_participation_percentage(df):
 def main():
     # Load the dataset
     df = load_data()
+    
+    plt.rcParams["font.family"] = "Times" #subject to change, times font for now
 
     # Menu to choose analysis
     while True:
