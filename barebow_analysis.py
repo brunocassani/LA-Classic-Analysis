@@ -36,7 +36,7 @@ def plot_average_points_per_year(df):
         
         plt.plot(scaled_match_number, data['Average Points per Arrow'], marker='o', label=f"{year}")
 
-    plt.title('Average Points per Arrow per Match')
+    #plt.title('Average Points per Arrow per Match')
     plt.xlabel('Match')
     plt.ylabel('Average Points per Arrow')
     plt.xticks(range(1, max_match_number + 1))  # Ensure x-axis has labels 1 to 7
@@ -63,22 +63,32 @@ def plot_total_xs_per_year(df):
         # Create a dictionary for scaling match numbers so the last match is at 7
         match_scale = {i: max_match_number - (num_matches - i) for i in range(1, num_matches + 1)}
         
-        # Apply the scaling
+        # Apply the scaling to match numbers
         scaled_match_number = data['Match Number'].map(match_scale)
         
-        plt.plot(scaled_match_number, data['Total Xs'], marker='o', label=f"{year}")
+        # Add jitter to the y-axis (Total Xs) by introducing a small random noise
+        jitter_strength = 0.2  # Adjust the strength of the jitter here
+        jittered_xs = data['Total Xs'] + np.random.uniform(-jitter_strength, jitter_strength, size=len(data))
+        
+        # Plot the data with jittered Total Xs
+        plt.plot(scaled_match_number, jittered_xs, marker='o', label=f"{year}")
 
-    # Set the title, labels, and grid
-    plt.title("Total Xs per Match")
-    plt.xlabel('Match #')
+    # Set plot title and labels
+    #plt.title('Men\'s Barebow: Total Xs per Match with Jittered Y-axis')
+    plt.xlabel('Match')
     plt.ylabel('Total Xs')
-    plt.xticks(range(1, max_match_number + 1))  # Ensure x-axis has labels 1 to 7
-    plt.ylim(0, 8)  # Set y-axis range from 0 to 8
+    
+    # Ensure x-axis has labels 1 to 7
+    plt.xticks(range(1, max_match_number + 1))
+    
+    # Add legend and grid
     plt.legend(title="Year")
     plt.grid(True)
-    
+
     # Show the plot
     plt.show()
+
+
 # Bar chart with top 10 single performances (x-axis: archer name and the year in parenthesis, y-axis: average score per arrow)
 def plot_top_performances(df):
     # Calculate average score per arrow for both archers
@@ -107,7 +117,7 @@ def plot_top_performances(df):
     plt.axhline(y=8.66, color='red', linestyle='--', label='Competition Average (8.66)')
     
     # Set plot details
-    plt.title('Top 10 Single Performances')
+    #plt.title('Top 10 Single Performances')
     plt.ylabel('Average Score per Arrow')
     plt.ylim(8, 10)  # Set y-axis range from 7 to 10
     plt.xticks(rotation=45, ha='right')  # Rotate the x-axis labels for better readability
@@ -150,7 +160,7 @@ def plot_win_percentage_by_riser(df):
         plt.text(0, 0, f'{riser}\n{win_percentage:.1f}%', ha='center', va='center', fontsize=16)
 
         # Add the title mentioning the number of unique archers
-        plt.title(f'{riser}: {int(stats["Unique_Archers"])} different archers\n{int(stats["Wins"])}/{int(stats["Total_Matches"])} matches won', fontsize=14)
+        #plt.title(f'{riser}: {int(stats["Unique_Archers"])} different archers\n{int(stats["Wins"])}/{int(stats["Total_Matches"])} matches won', fontsize=14)
 
         # Display the chart
         plt.show()
@@ -188,7 +198,7 @@ def plot_best_individual_performers(df):
     plt.axhline(y=8.66, color='red', linestyle='--', label='Competition Average (8.66)')
     
     # Set plot details
-    plt.title('Top 5 Best Individual Performers')
+    #plt.title('Top 5 Best Individual Performers')
     plt.ylabel('Average Score per Arrow')
     plt.ylim(8.2, 10)  # Set y-axis range to match typical scores
     plt.xticks(rotation=45, ha='right')  # Rotate the x-axis labels for readability
@@ -232,7 +242,7 @@ def plot_top_accurate_performers(df):
     plt.axhline(y=1.375, color='red', linestyle='--', label='Competition Average (1.375)')
     
     # Set plot details
-    plt.title('Top 10 Most Accurate Performers')
+    #plt.title('Top 10 Most Accurate Performers')
     plt.ylabel('Average Xs per Match')
     plt.xlabel('Archer')
     plt.ylim(0, 3)  # Set y-axis range to match typical Xs scores
@@ -262,7 +272,7 @@ def plot_top_match_counts(df):
     plt.bar(top_match_counts['Archer'], top_match_counts['Match Count'], color='coral')
     
     # Set plot details
-    plt.title('Top Archers with Most Matches')
+    #plt.title('Top Archers with Most Matches')
     plt.ylabel('Number of Matches')
     plt.xlabel('Archer')
     plt.xticks(rotation=45, ha='right')  # Rotate the x-axis labels for readability
@@ -306,7 +316,7 @@ def plot_top_winning_streaks(df):
     plt.bar(top_streaks['Label'], top_streaks['Top_Streak'], color='royalblue')
     
     # Set plot details
-    plt.title('Top 3 Longest Winning Streaks')
+    #plt.title('Top 3 Longest Winning Streaks')
     plt.ylabel('Streak Length (Number of Matches)')
     plt.xlabel('Archer')
     plt.xticks(rotation=45, ha='right')  # Rotate the x-axis labels for readability
@@ -336,6 +346,9 @@ def plot_returning_archers(df):
     # Calculate the percentage of returning archers
     percentage_returning = (returning_archers / total_archers) * 100
 
+    # Get the names of returning archers
+    returning_archers_names = archers_years[archers_years['Returning']]['Archer'].tolist()
+
     # Plot a circular progress chart
     fig, ax = plt.subplots(figsize=(6, 6), subplot_kw={'aspect': 'equal'})
     
@@ -344,12 +357,17 @@ def plot_returning_archers(df):
                            colors=['lightgreen', 'lightgray'], wedgeprops={'width': 0.4})
 
     # Add the text at the center of the pie
-    plt.text(0, 0, f'{percentage_returning:.1f}%\nReturning Archers', ha='center', va='center', fontsize=16)
+    plt.text(0, 0, f'{percentage_returning:.1f}%', ha='center', va='center', fontsize=28)
 
     # Add the title
-    plt.title(f'Total Archers: {total_archers}\nReturning Archers: {returning_archers}', fontsize=14)
+    #plt.title(f'Returning Archers: {returning_archers}\n Total Archers: {total_archers}', fontsize=14)
+
+    # Display the returning archers' names at the bottom of the chart
+    plt.figtext(0.5, -0.05, f"Returning Archers: {', '.join(returning_archers_names)}",
+                wrap=True, horizontalalignment='center', fontsize=10)
 
     # Display the chart
+    plt.tight_layout()
     plt.show()
 
 # Helper function to extract the last name, handling suffixes with regex
@@ -357,7 +375,7 @@ def extract_last_name(name):
     # Split the name by spaces
     name_parts = name.split()
     
-    # Check if the last part is a Roman numeral (e.g., "III", "IV")
+    # Check if the last part is a Roman numeral
     if re.match(r'^(I|II|III|IV|V|VI|VII|VIII|IX|X)$', name_parts[-1]):
         # If it is, use the second-to-last part as the last name
         return name_parts[-2]
@@ -383,7 +401,7 @@ def plot_top_matches_by_points(df):
     plt.axhline(y=8.66, color='red', linestyle='--', label='Competition Average (8.66)')
     
     # Set plot details
-    plt.title('Top 5 Matches in score')
+    #plt.title('Top 5 Matches in score')
     plt.ylabel('Average Score per Arrow')
     plt.xlabel('Match')
     plt.ylim(7, 10)  # Set y-axis range from 7 to 10
@@ -409,7 +427,7 @@ def plot_top_matches_by_accuracy(df):
     plt.bar(top_matches['Match Label'], top_matches['Total Xs'], color='skyblue')
     
     # Set plot details
-    plt.title('Top 5 Matches in Xs')
+    #plt.title('Top 5 Matches in Xs')
     plt.ylabel('Total Xs')
     plt.xlabel('Match')
     plt.ylim(0, top_matches['Total Xs'].max() + 2)  # Add some buffer to y-axis for better visibility
@@ -441,7 +459,7 @@ def plot_1spot_vs_3spot(df):
     plt.figure(figsize=(8, 6))
     plt.bar(['1-Spot', '3-Spot'], [avg_1spot, avg_3spot], color=['blue', 'orange'])
     
-    plt.title('1-Spot vs 3-Spot Targets (2024)')
+    #plt.title('1-Spot vs 3-Spot Targets (2024)')
     plt.ylabel('Average Score per Arrow')
     plt.ylim(7, 10)  # Set y-axis range from 7 to 10
     plt.show()
@@ -484,7 +502,7 @@ def plot_xs_wins_percentage(df):
     plt.text(0, 0, f'{xs_wins_percentage:.1f}%', ha='center', va='center', fontsize=16)
 
     # Set the title
-    plt.title(f'Percentage of Matches Won with More Xs', fontsize=14)
+    #plt.title(f'Percentage of Matches Won with More Xs', fontsize=14)
 
     # Display the chart
     plt.show()
@@ -493,7 +511,7 @@ def plot_xs_wins_percentage(df):
 # Function to display the fact about the only 12 hit
 def plot_only_12_hit():
     plt.text(0.5, 0.5, "Only 1 12 has been hit! Jonsson hit it to force a tiebreaker in the 2024 finals!", fontsize=12, ha='center')
-    plt.title('A single 12!')
+    #plt.title('A single 12!')
     plt.show()
 
 # Function to display the fact about zero matches without Xs and average Xs per match
@@ -504,7 +522,7 @@ def plot_zero_x_matches(df):
     plt.text(0.5, 0.5, f"There have been {zero_x_matches} matches where no one hit an X.\n"
                        f"The average number of Xs per match is {avg_xs_per_match:.2f}.",
              fontsize=12, ha='center')
-    plt.title('Zero Xs!')
+    #plt.title('Zero Xs!')
     plt.show()
 
 # Function to display the average score per arrow across all matches
@@ -515,7 +533,7 @@ def plot_average_score_per_arrow(df):
 
     plt.text(0.5, 0.5, f"The average score per arrow across all matches is {avg_score_per_arrow:.2f}.",
              fontsize=12, ha='center')
-    plt.title('High quality!')
+    #plt.title('High quality!')
     plt.show()
 
 # Function to display the list of archers by win percentage
@@ -608,7 +626,7 @@ def plot_all_performances(df):
     # Set labels and title
     plt.xlabel('Average Number of Xs')
     plt.ylabel('Average Score per Arrow')
-    plt.title('Average Xs vs Average Score per Arrow')
+    #plt.title('Average Xs vs Average Score per Arrow')
     plt.legend()
     plt.grid(True)
 
@@ -675,7 +693,7 @@ def plot_heatmap(df):
     # Set labels and title
     plt.xlabel('Average Number of Xs')
     plt.ylabel('Average Score per Arrow')
-    plt.title('Average Xs vs Average Score per Arrow')
+    #plt.title('Average Xs vs Average Score per Arrow')
     plt.legend()
     plt.grid(True)
 
@@ -712,7 +730,7 @@ def plot_average_score_per_year(df):
     plt.plot(x_values, reg_line, color='r', linestyle='--', label=f'Regression Line (slope={slope:.2f})')
 
     # Set plot labels and title
-    plt.title('Tournament-wide Average Score per Arrow', fontsize=14)
+    #plt.title('Tournament-wide Average Score per Arrow', fontsize=14)
     plt.xlabel('Year', fontsize=12)
     plt.ylabel('Average Score per Arrow', fontsize=12)
     
@@ -755,7 +773,7 @@ def plot_average_xs_per_year(df):
     plt.plot(x_values, reg_line, color='r', linestyle='--', label=f'Regression Line (slope={slope:.2f})')
 
     # Set plot labels and title
-    plt.title('Tournament-wide Average Xs per Match', fontsize=14)
+    #plt.title('Tournament-wide Average Xs per Match', fontsize=14)
     plt.xlabel('Year', fontsize=12)
     plt.ylabel('Average Xs per Match', fontsize=12)
     
@@ -799,10 +817,57 @@ def plot_riser_participation_percentage(df):
         plt.text(0, 0, f'{riser}\n{match_percentage:.1f}%', ha='center', va='center', fontsize=16)
 
         # Add the title mentioning the number of unique matches
-        plt.title(f'{riser}: {riser_match_count[riser]} matches of 37', fontsize=14)
+        #plt.title(f'{riser}: {riser_match_count[riser]} matches of 37', fontsize=14)
 
         # Display the chart
         plt.show()
+
+#heat map with all performances
+def plot_heatmap_all_performances(df):
+    # Calculate average Xs and average score per arrow for each match
+    df['Average Xs per Match'] = (df['Archer 1 Xs'] + df['Archer 2 Xs'])
+    df['Average Score per Arrow per Match'] = (df['Archer 1 Score'] + df['Archer 2 Score']) / 24
+
+    # Prepare data for linear regression
+    X = df[['Average Xs per Match']].values
+    y = df['Average Score per Arrow per Match'].values
+    
+    # Create scatter plot with KDE heatmap
+    plt.figure(figsize=(12, 8))
+    
+    #jitter y axis
+    jitter_strength_y = 0.1  # Adjust as needed
+    df['Jitter_Y'] = np.random.uniform(-jitter_strength_y, jitter_strength_y, size=len(df))
+    # KDE heatmap
+    sns.kdeplot(
+        data=df,
+        x='Average Xs per Match',
+        y='Average Score per Arrow per Match',
+        cmap='Blues',
+        fill=True,
+        thresh=0.1,
+        alpha=0.3
+    )
+    
+    # Scatter plot for each match performance
+    plt.scatter(
+        df['Average Xs per Match'],
+        df['Average Score per Arrow per Match'],
+        color='blue',
+        edgecolor='k',
+        alpha=0.7
+    )
+
+    # Set labels and title
+    plt.xlabel('Xs')
+    plt.ylabel('Average Score')
+    ##plt.title('Match Xs vs Average Score per Arrow')
+    plt.grid(True)
+
+    # Show the plot
+    plt.show()
+
+
 
 #main
 def main():
@@ -836,6 +901,7 @@ def main():
         print("20. Average Score per Arrow per Year")
         print("21. Average Xs per Year")
         print("22. Participation per riser")
+        print("23. Fuller heat map")
         print("0. Exit")
         
         # Get user input
@@ -886,6 +952,8 @@ def main():
             plot_average_xs_per_year(df)
         elif choice == '22':
             plot_riser_participation_percentage(df)
+        elif choice == '23':
+            plot_heatmap_all_performances(df)
         elif choice == '0':
             print("Exiting program.")
             break
