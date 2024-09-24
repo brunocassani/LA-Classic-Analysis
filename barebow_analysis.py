@@ -5,7 +5,7 @@ import re
 import seaborn as sns
 from sklearn.linear_model import LinearRegression
 
-# HERE ARE ALL THE COLUMNS FROM Mens_Barebow IN ORDER
+# HERE ARE ALL THE COLUMNS FROM Mens_Barebow.csv IN ORDER
 # Match ID, Archer 1 Name, Archer 2 Name, Archer 1 Score, Archer 2 Score, Archer 1 Xs, Archer 2 Xs, Archer 1 Target, Archer 2 Target, Archer 1 Riser, Archer 2 Riser, Winner, Year, Notes
 
 # Load the data
@@ -357,14 +357,11 @@ def plot_returning_archers(df):
                            colors=['lightgreen', 'lightgray'], wedgeprops={'width': 0.4})
 
     # Add the text at the center of the pie
-    plt.text(0, 0, f'{percentage_returning:.1f}%', ha='center', va='center', fontsize=28)
+    plt.text(0, 0, f'{percentage_returning:.1f}%', ha='center', va='center', fontsize=36)
+    plt.text(0, 0, f'\n\n\n\nOnly {returning_archers} returned out of {total_archers}', ha='center', va='center', fontsize=13)
 
     # Add the title
     #plt.title(f'Returning Archers: {returning_archers}\n Total Archers: {total_archers}', fontsize=14)
-
-    # Display the returning archers' names at the bottom of the chart
-    plt.figtext(0.5, -0.05, f"Returning Archers: {', '.join(returning_archers_names)}",
-                wrap=True, horizontalalignment='center', fontsize=10)
 
     # Display the chart
     plt.tight_layout()
@@ -815,6 +812,7 @@ def plot_riser_participation_percentage(df):
 
         # Add the text at the center of the pie
         plt.text(0, 0, f'{riser}\n{match_percentage:.1f}%', ha='center', va='center', fontsize=16)
+        plt.text(0, 0, f'\n\n\n\n\n{riser_match_count[riser]} of 37 matches', ha='center', va='center', fontsize=12)
 
         # Add the title mentioning the number of unique matches
         #plt.title(f'{riser}: {riser_match_count[riser]} matches of 37', fontsize=14)
