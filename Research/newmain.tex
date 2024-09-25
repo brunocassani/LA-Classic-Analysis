@@ -1,0 +1,154 @@
+\documentclass{article}
+\usepackage{graphicx} 
+\usepackage{lipsum} % Package to generate dummy text (for template) 
+\usepackage{hyperref} %URL
+\usepackage{flafter} %stop figs from going to the top
+\title{Performance Trends and Analysis in the Lancaster Archery Classic Men's Barebow Division: A Comprehensive Study}
+\author{Bruno Cassani} 
+\date{September 2024}
+
+\begin{document}
+
+\maketitle % Print the title section
+
+%\tableofcontents
+
+\begin{abstract}
+This study presents an in-depth analysis of performance trends in the Men's Barebow division at the Lancaster Archery Classic from its inception in 2017 through to 2024. By examining key factors such as score progression, equipment choices, and competition dynamics, the findings reveal a steady increase in overall scores, driven by the evolution of technique, equipment advancements, and a growing pool of talent. The dominance of particular riser brands, the emerging use of 3-spot targets, and the limited yet impactful role of the 12-ring are explored. These insights offer a valuable perspective on the rapid development of barebow as a competitive discipline and its future trajectory.\\
+\textbf{Key words}: archery, barebow, brand analysis, predictive analysis, Lancaster Archery Classic.
+
+\end{abstract}
+
+\tableofcontents
+
+\newpage
+\section{Introduction}
+Barebow archery, one of the most traditional forms of the sport, has emerged as a modern competitive discipline that remains closest to its ancient roots. Defined by its lack of advanced aiming aids like sights, stabilizers, or clickers, barebow strips archery down to instinctive shooting and raw skill. Competitors rely on their own ability to control the bow, aim, and shoot without technological assistance, making the discipline highly unpredictable and captivating for both athletes and spectators.
+
+The Lancaster Archery Classic, one of the most prestigious archery tournaments in the United States, has played a pivotal role in elevating the competitive landscape of barebow archery. Since its introduction in 2017, the Men's Barebow division has grown rapidly, attracting top talent from around the world. The tournament’s unique scoring system, featuring an optional 12-ring and awarding 11 points for hitting the X-ring, further adds to the dynamic and high-stakes nature of the competition. Unlike compound archery, where perfection is the baseline for success, barebow archery offers a level playing field where any archer can rise to prominence through skill, adaptability, and composure under pressure.
+
+The increasing visibility of barebow as a competitive sport raises important questions: How has the discipline evolved in recent years? What trends can be observed in the performance of athletes, and how are these trends shaped by equipment choices and emerging strategies? This study seeks to answer these questions by analyzing data from the Men's Barebow division of the Lancaster Archery Classic, focusing on score progression, the impact of different riser brands, and the emergence of new techniques like the use of 3-spot targets. By examining these trends, we aim to provide insights into the future of barebow archery and the factors that will shape its continued growth as a competitive discipline.
+
+\section{Methodology}
+Instead of collecting data from any online sources, all data was taken directly from the YouTube live recordings of the Classic. By using video footage, the study gains insights into the broader context, such as the use of 3-spot targets, archer behavior, and riser popularity over time. This being said, I will resort to the ``shootups" and other online sources in the continuation of this project as it will have a much larger scale in terms of competition years and number of disciplines covered. 
+
+For data organization, a CSV file was manually created containing information such as match ID, archer names, scores, X counts, riser brand, target type (single-spot or 3-spot), and year of the competition. This dataset was supplemented by additional research into riser manufacturers and archer backgrounds.
+
+The analysis was conducted using Python, with libraries such as Pandas for data manipulation, Matplotlib and Seaborn for visualization, and SQL for querying the data when necessary. The project’s full codebase, visualizations, and data are openly \href{https://github.com/brunocassani/LA-Classic-Analysis}{available on GitHub} for transparency and reproducibility, allowing for peer validation and potential extensions by the community.
+
+A key component of the analysis involved tracking trends in scores over time, both in the qualifiers and finals, as well as determining the impact of equipment choices (particularly riser brands and target type) on performance. Circular progress charts were used to illustrate the rising trend in average scores per arrow, while heat maps and scatter plots helped visualize more nuanced data such as match unpredictability and archer consistency.
+
+The collected data is the first of its kind for the Lancaster Archery Classic, offering a unique look into barebow competition. Future iterations of this project will expand the scope to include more years of competition, additional archery disciplines, and a deeper analysis of archer demographics and match dynamics.
+
+\section{Results}
+The analysis of the Lancaster Archery Classic's Men's Barebow\footnote{Hereupon shortened to ``the Classic"} division reveals several notable trends that provide insight into the evolution of barebow archery as a competitive sport. The key findings are organized into categories such as archer performance consistency, score trends, equipment dominance, and the impact of new strategies like 3-spot target use.
+
+\subsection{Archer Performance Consistency}
+Although barebow archery has a lower barrier to entry compared to other disciplines, relatively few archers have consistently made it to the finals over the years. Out of 34 archers competing in the Classic since its inception, only five have qualified for the finals more than once. John Demmer III stands out as the most successful competitor, having reached the finals five times and winning twice (2017, 2022). His dominance is reflected in the data, with three of his performances ranking in the top five based on average score per arrow (Figure~\ref{fig:figure1}).
+
+Alongside Demmer, notable archers include Erik Jonsson and Lina Björklund, both of whom have excelled in European competitions and brought their high-level performance to the Classic. Despite these dominant figures—or perhaps because of them— the influx of new talent each year continues to elevate the competitive field, contributing to the unpredictable and dynamic barebow Classic atmosphere.
+
+\subsection{Rising Scores Over Time}
+One of the most significant trends uncovered in this analysis is the steady increase in average scores per arrow over time. Since the barebow division was introduced in 2017, the average score per arrow has increased by approximately 0.05 points per year. Figure~\ref{fig:figure2} highlights this upward trajectory, with only one year (2020) showing a slight decrease in scores.
+
+The data indicates that 2025 may continue this trend, potentially pushing the competition-wide average above 8.66 points per arrow, marking a consistent "raising of the bar." This improvement is likely driven by the growing talent pool, increased competition, and advancements in technique and equipment.
+
+\subsection{Riser Dominance and Brand Trends}
+Equipment, particularly risers, plays a pivotal role in competition outcomes. The data reveals that three major brands—Gillo, Hoyt, and CD Archery—dominate the field. Gillo, used by 12 archers, has the largest presence, followed closely by Hoyt and CD Archery, each with 10 users (Figure~\ref{fig:figure3}). However, when factoring in match outcomes, Hoyt and CD Archery have higher win percentages than Gillo, despite its larger user base. Hoyt risers, in particular, have been used by the winner in three out of the seven Classics, reinforcing the brand’s reputation and market dominance.
+
+This trend toward equipment from established brands is expected to continue, with manufacturers providing incentives such as sponsorships and discounts to high-performing archers. Figure~\ref{fig:figure4} illustrates this trend, showing the prevalence of Hoyt and Gillo risers in recent years.
+
+\subsection{Emergence of 3-Spot Targets}
+A major shift occurred in the 2024 Classic, where three archers—Woodlief, Demmer, and Huang—opted for 3-spot targets rather than the traditional single-spot face (Figure~\ref{fig:figure5}). This switch proved to be advantageous, as these archers significantly outperformed their peers who continued to use the single-spot target. The adoption of 3-spot targets appears to be driven by the “aim small, miss small” principle, which offers increased precision and consistency.
+
+While this is a new development in barebow, it mirrors trends seen in other disciplines like Olympic recurve and compound. Given the success of 3-spot users in the 2024 Classic, it is likely that more archers will adopt this strategy in future tournaments. I predict that at least two of the finalists in the 2025 Classic will utilize 3-spot targets.
+
+\subsection{Score Volatility and X Counts}
+The analysis of match scores reveals an intriguing pattern of score volatility, with the number of Xs per match ranging from a high of 8 to an average of 2.86. While X counts are unpredictable, there is a consistent presence of at least one X in every match (Figure~\ref{fig:figure6}). This finding suggests that while barebow archery may lack the precision of compound archery, it retains a unique consistency in hitting the center of the target, even if the number of Xs fluctuates significantly.
+
+Furthermore, while average match scores have increased over time, there is still considerable variability from one match to the next, particularly in the final rounds. Figure~\ref{fig:figure7} shows a heat map illustrating the performance volatility across matches, with a general upward trend in scores but no clear pattern regarding X counts.
+
+\subsection{The Elusive 12-Ring}
+One of the most interesting pieces of data is the rarity of the 12-ring in barebow competition. Since the start of the Classic, only one 12 has been hit (in the 2024 final), while there have been two complete misses (0 points). This statistic underscores the risk of going for the 12, making it an unpopular strategy among barebow archers. However, as overall scores increase and archers become more confident, it is possible that more archers will attempt—and succeed—in hitting the 12-ring in future competitions.
+
+\section{Conclusion}
+Barebow archery has steadily evolved as a distinct and growing competitive discipline, rooted in tradition but gaining attention due to its simplicity and accessibility. Through the analysis of data from the Lancaster Archery Classic, several important trends emerge. Archers like John Demmer III and Erik Jonsson have demonstrated consistent excellence, yet the competition remains dynamic and unpredictable, with a steady influx of new talent continually raising the level of play. The rising average scores per arrow, the emergence of 3-spot targets, and shifting trends in riser preference all signal a sport that is undergoing constant change and growth.
+
+As barebow continues to gain popularity, the competition landscape is likely to evolve further, particularly as more archers experiment with strategies like aiming for the elusive 12-ring or adopting 3-spot targets for enhanced precision. Manufacturers, too, are playing an increasingly significant role, with brands like Hoyt, Gillo, and CD Archery competing to dominate the market and support the next wave of talent. 
+
+This study not only highlights the key players and equipment trends in the Classic, but also opens the door to deeper analysis in future competitions. With a growing database and more comprehensive data collection methods, the future of barebow archery analysis promises to shed light on even more intricate patterns, helping both athletes and enthusiasts understand the ever-changing dynamics of the sport.
+
+\newpage
+\section{Appendix}
+
+\begin{figure}[ht]
+    \centering
+    \includegraphics[scale=0.4]{charts/Figure_9.png}
+    \caption{Percentage of Returning Archers}
+    \label{fig:figure1}
+\end{figure}
+
+\begin{figure}[ht]
+    \centering
+    \includegraphics[scale=0.5]{charts/Figure_7.png}
+    \caption{Archers with the Most Matches}
+    \label{fig:figure2}
+\end{figure}
+
+\begin{figure}[ht]
+    \centering
+    \includegraphics[scale=0.55]{charts/Figure_10.png}
+    \caption{Top 5 Highest Quality Matches}
+    \label{fig:figure3}
+\end{figure}
+
+\begin{figure}[ht]
+    \centering
+    \includegraphics[scale=0.6]{charts/Figure_20.png}
+    \caption{Average Match Scores Over the Years}
+    \label{fig:figure4}
+\end{figure}
+
+\begin{figure}[ht]
+    \centering
+    \includegraphics[scale=0.6]{charts/Figure_21.png}
+    \caption{Average Match Xs Over the Years}
+    \label{fig:figure5}
+\end{figure}
+
+\begin{figure}[ht]
+    \centering
+    \includegraphics[scale=0.6]{charts/Figure_2.png}
+    \caption{Every Classic Match by Xs}
+    \label{fig:figure6}
+\end{figure}
+%\footnote{The number of total Xs is a whole number, the lines are slightly jittered to avoid overlap}
+\begin{figure}[ht]
+    \centering
+    \includegraphics[scale=0.6]{charts/Figure_1.png}
+    \caption{Every Classic Match by Score}
+    \label{fig:figure7}
+\end{figure}
+
+\begin{figure}[h]
+    \centering
+    \includegraphics[scale=.5]{charts/Figure_23.png}
+    \caption{Every Classic Match by Xs vs. Score}
+    \label{fig:figure8}
+\end{figure}
+
+\begin{figure}[h]
+    \centering
+    \includegraphics[scale=.3]{charts/Figure_22.png}
+    \caption{Representation in All Matches by Brand}
+    \label{fig:figure9}
+\end{figure}
+
+\begin{figure}[h]
+    \centering
+    \includegraphics[scale=.55]{charts/Figure_12.png}
+    \caption{Side by side comparison between 1-spot and 3-spot performances}
+    \label{fig:figure10}
+\end{figure}
+
+\end{document}
