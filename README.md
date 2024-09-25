@@ -5,7 +5,7 @@ A SQL database and Python analysis of the Lancaster Archery Classic Finals over 
 Additionally, I have published a research paper detailing all the findings, available at [DOI: 10.5281/zenodo.13836027](https://doi.org/10.5281/zenodo.13836027).
 
 ## Dependencies
-You might need to install the following to run the program:\
+You might need to install the following to run the Python part of the program:\
 `pandas`\
 `matplotlib.pyplot`\
 `numpy`\
