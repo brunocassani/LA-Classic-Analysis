@@ -14,7 +14,7 @@ You might need to install the following to run the Python part of the program:\
 
 ## Contributing
 
-Please reach out to [brunocassani04@gmail.com](mailto:brunocassani04@gmail.com) or submit a request if you think I've made a mistake somewhere or want to contribute to the project.
+Please reach out to [brunocassani04@gmail.com](mailto:brunocassani04@gmail.com) or submit a request if you think I've made a mistake somewhere, or want to contribute to the project.
 
 ## Sourcing
 
